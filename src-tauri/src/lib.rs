@@ -3,20 +3,22 @@ mod db;
 mod models;
 mod util;
 
-use commands::{
-    boards::{create_board, delete_board, get_board, get_last_board_id, list_boards, set_last_board_id, update_board},
-    cards::{
-        archive_card, create_card, delete_card, duplicate_card, get_card, list_cards, move_card,
-        move_card_to_column, reorder_cards, update_card,
+use commands::agile::{
+    epics::{create_epic, delete_epic, list_epics, update_epic},
+    projects::{
+        create_project, delete_project, get_last_project_id, get_project, list_projects,
+        set_last_project_id, update_project,
     },
-    checklist::{
-        delete_checklist_item, list_checklist_items, reorder_checklist_items, upsert_checklist_item,
+    sprints::{
+        create_sprint, delete_sprint, get_last_sprint_id, list_sprints, set_last_sprint_id,
+        update_sprint,
     },
-    columns::{
-        create_column, delete_column, list_columns, move_column_down, move_column_up, reorder_columns,
-        update_column,
+    stories::{
+        create_story, delete_story, get_story, list_stories, move_story, reorder_stories,
+        set_story_acceptance, set_story_dependencies, update_story,
     },
-    tags::{create_tag, list_tags, set_card_tags},
+    versions::{create_version, delete_version, list_versions, update_version},
+    workflow::list_workflow_columns,
 };
 
 use tauri::Manager;
@@ -36,37 +38,37 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            list_boards,
-            create_board,
-            update_board,
-            delete_board,
-            get_board,
-            get_last_board_id,
-            set_last_board_id,
-            list_columns,
-            create_column,
-            update_column,
-            reorder_columns,
-            delete_column,
-            move_column_up,
-            move_column_down,
-            list_cards,
-            get_card,
-            create_card,
-            update_card,
-            move_card,
-            reorder_cards,
-            duplicate_card,
-            archive_card,
-            delete_card,
-            move_card_to_column,
-            list_tags,
-            create_tag,
-            set_card_tags,
-            list_checklist_items,
-            upsert_checklist_item,
-            delete_checklist_item,
-            reorder_checklist_items,
+            list_projects,
+            get_project,
+            create_project,
+            update_project,
+            delete_project,
+            get_last_project_id,
+            set_last_project_id,
+            list_versions,
+            create_version,
+            update_version,
+            delete_version,
+            list_epics,
+            create_epic,
+            update_epic,
+            delete_epic,
+            list_sprints,
+            create_sprint,
+            update_sprint,
+            delete_sprint,
+            get_last_sprint_id,
+            set_last_sprint_id,
+            list_workflow_columns,
+            list_stories,
+            get_story,
+            create_story,
+            update_story,
+            delete_story,
+            set_story_acceptance,
+            set_story_dependencies,
+            move_story,
+            reorder_stories,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

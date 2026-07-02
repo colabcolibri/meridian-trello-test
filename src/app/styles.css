@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "./trello-theme.css";
+@import "./us-card.css";
+@import "./us-form.css";
 
 html,
 body,

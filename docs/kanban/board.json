@@ -462,5 +462,487 @@
     "tests": "required",
     "tests_status": "done",
     "ready": true
+  },
+  {
+    "id": "US-0032",
+    "title": "Migration schema agile no SQLite",
+    "epic": "EPIC-11",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [],
+    "done_when": "Migration aplica tabelas agile; app inicia sem erro; schema documentado em architecture.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0033",
+    "title": "Commands CRUD de projetos",
+    "epic": "EPIC-11",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0032"
+    ],
+    "done_when": "list/create/update/delete_project funcionam via invoke; dados persistem após restart.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0034",
+    "title": "Commands CRUD versões épicos e sprints",
+    "epic": "EPIC-11",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0032"
+    ],
+    "done_when": "CRUD de version, epic e sprint por project_id funciona; status planned/active/complete persistido.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0035",
+    "title": "Commands CRUD user stories e acceptance",
+    "epic": "EPIC-11",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0032",
+      "US-0034"
+    ],
+    "done_when": "CRUD US com acceptance e depends_on; move_story entre colunas workflow persiste order.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0036",
+    "title": "Workspace listar e criar projetos",
+    "epic": "EPIC-12",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0033"
+    ],
+    "done_when": "Tela inicial agile lista projetos; criar projeto navega ou seleciona contexto; estilo v2.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0037",
+    "title": "Navegação projeto versão sprint",
+    "epic": "EPIC-12",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0036",
+      "US-0034"
+    ],
+    "done_when": "Breadcrumb ou tabs levam projeto→versão→sprint; sprint ativo persiste; back ao workspace.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0038",
+    "title": "Quadro kanban colunas workflow agile",
+    "epic": "EPIC-13",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0035",
+      "US-0037"
+    ],
+    "done_when": "Board mostra colunas workflow padrão; DnD move US; ordem persiste via move_story.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0039",
+    "title": "Cartão US badges épico MoSCoW depends",
+    "epic": "EPIC-13",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0038"
+    ],
+    "done_when": "Cartão compacto exibe US-XXXX, épico, versão, MoSCoW, ready e ícone de dependência bloqueante.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0040",
+    "title": "Filtros versão épico sprint no quadro",
+    "epic": "EPIC-13",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Should",
+    "depends_on": [
+      "US-0038"
+    ],
+    "done_when": "Barra de filtros reduz cartões visíveis por versão, épico e sprint sem reset mútuo.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0041",
+    "title": "Modal US visualizar Intent Meridian",
+    "epic": "EPIC-14",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0035",
+      "US-0038"
+    ],
+    "done_when": "Clique no cartão US abre modal read-only com Why, Where, Acceptance e metadados.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0042",
+    "title": "Modal US editar campos Meridian",
+    "epic": "EPIC-14",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0041"
+    ],
+    "done_when": "Gestor edita Why, Where, acceptance, ready, status; validação 🔶; cartão atualiza ao salvar.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0043",
+    "title": "Telas CRUD versões épicos sprints",
+    "epic": "EPIC-12",
+    "version": "v3",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0034",
+      "US-0037"
+    ],
+    "done_when": "Gestor cria/edita versão, épico e sprint pela UI; listagens refletem status Meridian.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0044",
+    "title": "Migration campos US Meridian v2",
+    "epic": "EPIC-15",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [],
+    "done_when": "Migration aplica colunas tests, tests_status, out_of_scope, notes, planned_json; app inicia sem erro.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0045",
+    "title": "API summary enriquecida para card face",
+    "epic": "EPIC-15",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0044"
+    ],
+    "done_when": "list_stories/get_story retornam why, preamble, done_when, acceptance preview (3 itens), tests, boundaries resumo.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0046",
+    "title": "UsCardMeridian substitui StoryCompact",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0045"
+    ],
+    "done_when": "AgileBoardView usa UsCardMeridian; StoryCompact não importado no board agile.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0047",
+    "title": "Face cartão As I want so that",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0046"
+    ],
+    "done_when": "Cartão exibe linha **As** … **I want** … **so that** … truncada responsiva.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0048",
+    "title": "Face cartão Why e done_when",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0046"
+    ],
+    "done_when": "Cartão exibe Why (2 linhas max) e done_when em bloco Intent.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0049",
+    "title": "Face mini acceptance e progresso",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0046"
+    ],
+    "done_when": "Cartão lista até 3 CA com checkbox visual + barra X/Y checked.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0050",
+    "title": "Design system us-card CSS",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0046"
+    ],
+    "done_when": "Classe us-card sem trello-card; layout Intent-first documentado em trello-theme ou us-card.css.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0051",
+    "title": "Form criar US preamble e done_when",
+    "epic": "EPIC-17",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0044"
+    ],
+    "done_when": "Adicionar US no board abre form com As/I want/so that + done_when obrigatórios; title derivado ou explícito.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0052",
+    "title": "Modal seções schema v2 ordenadas",
+    "epic": "EPIC-17",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0044",
+      "US-0046"
+    ],
+    "done_when": "UsStoryModal com Intent → Plan → Boundaries → Record; substituir StoryDetailModal no agile path.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0053",
+    "title": "Record read-only e Boundaries editável",
+    "epic": "EPIC-17",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0052"
+    ],
+    "done_when": "Record mostra Executed/Files placeholder read-only; Boundaries out_of_scope + notes editáveis.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0054",
+    "title": "Colunas ciclo Meridian seis estágios",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0046"
+    ],
+    "done_when": "Seed workflow: Backlog, Refine, Ready, Em progresso, Review, Concluída; migration ou update seed.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0055",
+    "title": "Regras visuais ready por coluna",
+    "epic": "EPIC-16",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Should",
+    "depends_on": [
+      "US-0054"
+    ],
+    "done_when": "Badge ready só destaca em coluna Ready; aviso ao mover US not ready para Em progresso.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0056",
+    "title": "Nav projetos primário boards legado",
+    "epic": "EPIC-18",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0050"
+    ],
+    "done_when": "Home /projects; link boards só rodapé/settings; remover promo cruzada confusa.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0057",
+    "title": "Banner depreciação kanban tarefas",
+    "epic": "EPIC-18",
+    "version": "v4",
+    "status": "✅",
+    "moscow": "Should",
+    "depends_on": [
+      "US-0056"
+    ],
+    "done_when": "BoardListPage exibe banner legado; README/docs 00_scope alinhados.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0058",
+    "title": "Schema version_epics e API relacional",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [],
+    "done_when": "Migration version_epics aplicada; commands set/list/get derivam Included; JSON legado migrado e write path deprecado.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
+  },
+  {
+    "id": "US-0059",
+    "title": "CRUD versão com Included derivado",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0058"
+    ],
+    "done_when": "CreateVersionDialog e EditVersionDialog não aceitam Included manual; seção read-only derivada; Explicitly out editável; ProductCrudPanel abre edit wizard.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
+  },
+  {
+    "id": "US-0060",
+    "title": "CRUD épico com vínculo relacional à versão",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0058"
+    ],
+    "done_when": "CreateEpicDialog e EditEpicDialog persistem versões via set_epic_versions; version_ids_json não é mais escrito; edição completa disponível.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
+  },
+  {
+    "id": "US-0061",
+    "title": "CRUD sprint com wizard de edição",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0058"
+    ],
+    "done_when": "EditSprintDialog edita goal, done_when, out_of_scope e status; versão FK visível; create sprint mantém select de versão; blur inline de metadata removido.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
+  },
+  {
+    "id": "US-0062",
+    "title": "Hub hierárquico versão épico sprint",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0059",
+      "US-0060",
+      "US-0061"
+    ],
+    "done_when": "ProjectHubPage exibe drill-down versão→épicos→sprints→quadro; ProductCrudPanel plano substituído; create/edit integrados no contexto.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
+  },
+  {
+    "id": "US-0063",
+    "title": "Formulários US com selects em cascata",
+    "epic": "EPIC-19",
+    "version": "v5",
+    "status": "❌",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0058"
+    ],
+    "done_when": "CreateUsDialog e UsStoryModal filtram épico/sprint por versão; validação rejeita combinações incoerentes; epic fora da versão não aparece no select.",
+    "tests": "required",
+    "tests_status": "pending",
+    "ready": true
   }
 ]

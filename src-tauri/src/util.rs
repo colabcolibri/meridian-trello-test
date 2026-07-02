@@ -21,5 +21,8 @@ pub fn validate_title(title: &str) -> Result<(), String> {
 }
 
 pub fn map_db_err(err: rusqlite::Error) -> String {
+    if let rusqlite::Error::InvalidParameterName(msg) = err {
+        return msg;
+    }
     err.to_string()
 }

@@ -2,6 +2,60 @@
   "date": "2026-07-02",
   "entries": [
     {
+      "time": "23:01",
+      "title": "v5 planejada — hierarquia relacional agile",
+      "affected_document": "docs/versions/v5.md",
+      "what_changed": "Criada v5 planned: EPIC-19, sprints v5-S1 a v5-S4, US-0058 a US-0063 refined ready. Included de versão derivado do banco (version_epics); Explicitly out permanece texto livre.",
+      "why_changed": "Metadata agile usa JSON manual (included_json, version_ids_json) e UI plana — gestor exige relações SQLite e CRUD/navegação hierárquica editável.",
+      "impact": "Próximo: /implement-us US-0058 em diante por sprint. Branch git agile como linha principal — convenção local, fora de escopo de implementação imediata.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "19:37",
+      "title": "Remoção kanban v1 — só produto agile US",
+      "affected_document": "docs/architecture/data-model.md",
+      "what_changed": "Removidos /boards, commands boards/cards/columns/tags/checklist, UI legada; migration drop_kanban_v1; app = apenas /projects.",
+      "why_changed": "Gestor não quer dual produto — apenas user stories Meridian no quadro.",
+      "impact": "Dados v1 apagados do SQLite na upgrade; código e rotas legados eliminados.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "19:35",
+      "title": "v4 entregue — cartão 100% US Meridian",
+      "affected_document": "docs/versions/v4.md",
+      "what_changed": "US-0044 a US-0057 ✅; UsCardMeridian, CreateUsForm, UsStoryModal; migration schema v2; /projects produto principal; /boards legado com banner.",
+      "why_changed": "Face do cartão v3 ainda parecia tarefa Trello — v4 exige preamble, Why, done_when e CA na face + modal schema v2.",
+      "impact": "App Tauri exibe US Meridian no quadro agile; kanban v1 permanece legado. validate_meridian.py ok.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "19:25",
+      "title": "v4 planejada — cartão 100% US Meridian",
+      "affected_document": "docs/versions/v4.md",
+      "what_changed": "Criada v4 planned: EPIC-15 a EPIC-18, sprints v4-S1 a v4-S5, US-0044 a US-0057. v3 entregou agile paralelo mas face do cartão ainda é tarefa Trello.",
+      "why_changed": "Dogfood: gestor espera cartão = estrutura us-template (preamble, Why, CA, done_when) — não title+badges.",
+      "impact": "Próximo: /refine-us US-0044 → implement v4-S1 em diante. v3 permanece complete.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "19:25",
+      "title": "v3 entregue — gestão agile SQLite no app",
+      "affected_document": "docs/versions/v3.md",
+      "what_changed": "US-0032 a US-0043 ✅ com Record; v3 complete; EPIC-11 a EPIC-14 complete; sprints v3-S1 a v3-S4 fechados.",
+      "why_changed": "Implementação v3: projetos, versões, épicos, sprints, US Meridian no SQLite + UI agile.",
+      "impact": "Entrada principal do app em /projects; kanban legado em /boards. validate_meridian.py passa.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "19:13",
+      "title": "Versão v3 — gestão agile US com SQLite no app",
+      "affected_document": "docs/versions/v3.md",
+      "what_changed": "Criada v3 planned com EPIC-11 a EPIC-14, sprints v3-S1 a v3-S4, US-0032 a US-0043. Produto pivota de kanban de tarefas para backlog agile Meridian-equivalente persistido em SQLite.",
+      "why_changed": "Dogfood e governança Meridian mostram necessidade de gerir épicos, versões, sprints e US ricas no próprio app — Markdown continua no repo para desenvolvimento do app, não como runtime do produto.",
+      "impact": "v2 permanece active até fechamento; v3 inicia em planned. Recomendado revisar docs/00_scope.md para refletir pivot (status review). Implementação via /refine-us e /implement-us por sprint.",
+      "responsible": "gestor"
+    },
+    {
       "time": "18:30",
       "title": "Versão v2 — UX Trello e correção DnD",
       "affected_document": "docs/versions/v2.md",

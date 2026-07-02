@@ -5,7 +5,7 @@ This repository is a **live demonstration** of [**Meridian**](https://github.com
 > **Meridian repo:** [github.com/colabcolibri/meridian](https://github.com/colabcolibri/meridian)  
 > Phased docs, epics, user stories, kanban, and a structured decision log — a harness layer on top of Cursor or Claude Code. Chat does not persist. **Files do.**
 
-The sample product built here is a **minimal local Trello**: an offline desktop app (Tauri + React + SQLite) with boards, columns, cards, drag-and-drop, and rich card metadata. The Kanban app is the demo; **the point of this repo is to show Meridian in action** — what changes when you stop "vibe coding" and start governing AI delivery.
+The sample product built here is a **local agile workspace** (Tauri + React + SQLite): the app manages **projects, versions, epics, sprints, and Meridian user stories** with cartões US schema v2 (preamble, Why, done_when, acceptance preview). **Kanban de tarefas v1 foi removido** — o produto é só gestão US Meridian. This repo is a live demo of [**Meridian**](https://github.com/colabcolibri/meridian) governance in action.
 
 ### Relationship to the Meridian repo
 
@@ -351,11 +351,11 @@ After `/refine-us` (all stories) and `/implement-us` + `/complete-us`, each US g
 | --- | --- |
 | Tauri + React + TypeScript | `src-tauri/`, `src/app/`, Vite config |
 | SQLite persistence | `src-tauri/migrations/`, `src-tauri/src/db/` |
-| Boards, columns, cards CRUD | `src/features/boards/`, `columns/`, `cards/` |
-| Tauri invoke API | `src-tauri/src/commands/`, `src/domain/` types |
-| Drag and drop | `@dnd-kit` in `src/features/boards/ui/BoardView.tsx` |
-| Card modal, tags, checklist | `src/features/cards/` |
-| Trello-like visual (v2) | `src/app/trello-theme.css`, US-0021–0025 |
+| Projetos, versões, épicos, sprints, US | `src/features/agile/`, `src-tauri/src/commands/agile/` |
+| Tauri invoke API | `src-tauri/src/commands/`, `src/domain/agileTypes.ts` |
+| Drag and drop no quadro US | `@dnd-kit` in `src/features/agile/ui/AgileBoardView.tsx` |
+| Cartão e modal US Meridian v4 | `UsCardMeridian`, `UsStoryModal`, `CreateUsForm` |
+| Visual quadro | `src/app/trello-theme.css`, `src/app/us-card.css` |
 
 ---
 
