@@ -224,7 +224,6 @@ pub struct CreateEpicInput {
     pub out_of_scope: Option<String>,
     pub notes: Option<String>,
     pub profiles_json: Option<String>,
-    pub version_ids_json: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -239,7 +238,6 @@ pub struct UpdateEpicInput {
     pub out_of_scope: Option<String>,
     pub notes: Option<String>,
     pub profiles_json: Option<String>,
-    pub version_ids_json: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

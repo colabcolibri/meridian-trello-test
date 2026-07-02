@@ -25,7 +25,6 @@ function toInput(projectId: string, payload: EpicPayload, id?: string) {
     out_of_scope: payload.outOfScope ?? null,
     notes: payload.notes ?? null,
     profiles_json: payload.profilesJson ?? null,
-    version_ids_json: null,
   };
 }
 
