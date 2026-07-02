@@ -9,6 +9,9 @@ use commands::agile::{
         create_project, delete_project, get_last_project_id, get_project, list_projects,
         set_last_project_id, update_project,
     },
+    relations::{
+        get_epic_versions, get_version_included, list_epics_for_version, set_epic_versions,
+    },
     sprints::{
         create_sprint, delete_sprint, get_last_sprint_id, list_sprints, set_last_sprint_id,
         update_sprint,
@@ -53,6 +56,10 @@ pub fn run() {
             create_epic,
             update_epic,
             delete_epic,
+            list_epics_for_version,
+            get_epic_versions,
+            set_epic_versions,
+            get_version_included,
             list_sprints,
             create_sprint,
             update_sprint,

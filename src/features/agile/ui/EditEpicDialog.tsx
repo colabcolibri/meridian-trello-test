@@ -1,77 +1,89 @@
 import { useEffect, useState } from "react";
-import type { EpicStatus, Version } from "../../../domain/agileTypes";
+import type { Epic, EpicStatus, Version } from "../../../domain/agileTypes";
 import { EPIC_STATUS_OPTIONS } from "../../../domain/agileConstants";
-import { stringifyStringList } from "../../../domain/meridianJson";
-import { StringListEditor } from "./ListFieldEditor";
+import { parseStringList, stringifyStringList } from "../../../domain/meridianJson";
 import { invokeErrorMessage } from "../../../lib/errors";
 import { validateName } from "../../../domain/validators";
 import { epicService } from "../epicService";
 import { versionService } from "../versionService";
-import { VersionMultiPicker } from "./VersionMultiPicker";
+import { StringListEditor } from "./ListFieldEditor";
 import { MeridianWizardShell, type WizardStep } from "./MeridianWizardShell";
 import { UsField, UsFieldGrid, UsForm, UsSelectField, UsTextareaField, UsTextField } from "./UsFormFields";
+import { VersionMultiPicker } from "./VersionMultiPicker";
 
 const STEPS: WizardStep[] = [
-  { id: "meta", label: "Epic", hint: "Frontmatter — title, outcome, status, versions and profiles." },
-  { id: "capability", label: "Capability", hint: "User problem and expected product behavior." },
-  { id: "outcome", label: "Outcome", hint: "Expected outcome and epic out of scope." },
-  { id: "review", label: "Review", hint: "Check the epic-template mirror." },
+  { id: "meta", label: "Epic", hint: "Title, outcome, status, versions." },
+  { id: "capability", label: "Capability", hint: "Problem and behavior." },
+  { id: "outcome", label: "Outcome", hint: "Expected outcome and boundaries." },
+  { id: "review", label: "Review", hint: "Check before saving." },
 ];
 
-export function CreateEpicDialog({
+export function EditEpicDialog({
   projectId,
+  epic,
   onClose,
-  onCreated,
+  onSaved,
 }: {
   projectId: string;
+  epic: Epic;
   onClose: () => void;
-  onCreated: () => void;
+  onSaved: () => void;
 }) {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [versions, setVersions] = useState<Version[]>([]);
+  const [loadingMeta, setLoadingMeta] = useState(true);
 
-  const [title, setTitle] = useState("");
-  const [status, setStatus] = useState<EpicStatus>("active");
-  const [outcome, setOutcome] = useState("");
-  const [capability, setCapability] = useState("");
-  const [expectedOutcome, setExpectedOutcome] = useState("");
-  const [outOfScope, setOutOfScope] = useState("");
-  const [notes, setNotes] = useState("");
-  const [profiles, setProfiles] = useState<string[]>([""]);
+  const [title, setTitle] = useState(epic.title);
+  const [status, setStatus] = useState<EpicStatus>(epic.status);
+  const [outcome, setOutcome] = useState(epic.outcome ?? "");
+  const [capability, setCapability] = useState(epic.capability ?? "");
+  const [expectedOutcome, setExpectedOutcome] = useState(epic.expected_outcome ?? "");
+  const [outOfScope, setOutOfScope] = useState(epic.out_of_scope ?? "");
+  const [notes, setNotes] = useState(epic.notes ?? "");
+  const [profiles, setProfiles] = useState<string[]>(parseStringList(epic.profiles_json));
   const [versionIds, setVersionIds] = useState<string[]>([]);
 
   useEffect(() => {
-    void versionService.list(projectId).then(setVersions).catch(() => setVersions([]));
-  }, [projectId]);
-
-  const validateStep = (index: number): string | null => {
-    if (index === 0) {
-      const err = validateName(title);
-      if (err) return err;
-      if (!outcome.trim()) return "Outcome is required — one epic delivery sentence.";
-      if (versionIds.length < 1) return "Select at least one linked version.";
-      return null;
-    }
-    if (index === 1) {
-      if (capability.trim().length < 40) {
-        return "Capability must describe problem and behavior (min. ~40 characters).";
+    void (async () => {
+      try {
+        const [vers, vIds] = await Promise.all([
+          versionService.list(projectId),
+          epicService.getVersionIds(projectId, epic.id),
+        ]);
+        setVersions(vers);
+        setVersionIds(vIds);
+      } catch (err) {
+        setError(invokeErrorMessage(err));
+      } finally {
+        setLoadingMeta(false);
       }
-      return null;
-    }
-    if (index === 2) {
-      if (!expectedOutcome.trim()) return "Expected outcome is required.";
-      if (!outOfScope.trim()) return "Out of scope for this epic is required.";
-      return null;
-    }
-    return null;
-  };
+    })();
+  }, [projectId, epic.id]);
 
   const toggleVersion = (id: string) => {
     setVersionIds((prev) =>
       prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
     );
+  };
+
+  const validateStep = (index: number): string | null => {
+    if (index === 0) {
+      const err = validateName(title);
+      if (err) return err;
+      if (!outcome.trim()) return "Outcome is required.";
+      if (versionIds.length < 1) return "Select at least one linked version.";
+      return null;
+    }
+    if (index === 1 && capability.trim().length < 40) {
+      return "Capability must describe problem and behavior (min. ~40 characters).";
+    }
+    if (index === 2) {
+      if (!expectedOutcome.trim()) return "Expected outcome is required.";
+      if (!outOfScope.trim()) return "Out of scope is required.";
+    }
+    return null;
   };
 
   const goNext = () => {
@@ -96,8 +108,9 @@ export function CreateEpicDialog({
     setSaving(true);
     setError(null);
     try {
-      await epicService.create(
+      await epicService.update(
         projectId,
+        epic.id,
         {
           title: title.trim(),
           status,
@@ -110,7 +123,7 @@ export function CreateEpicDialog({
         },
         versionIds,
       );
-      onCreated();
+      onSaved();
       onClose();
     } catch (err) {
       setError(invokeErrorMessage(err));
@@ -121,11 +134,12 @@ export function CreateEpicDialog({
 
   return (
     <MeridianWizardShell
-      title="New epic"
-      subtitle="Mirror of docs/epics/*.md — capability, outcome and product boundaries."
+      title={`Editar ${epic.id}`}
+      subtitle="Épico Meridian — versões via relação no banco."
       steps={STEPS}
       step={step}
       error={error}
+      loading={loadingMeta}
       saving={saving}
       onClose={onClose}
       onBack={() => {
@@ -140,21 +154,14 @@ export function CreateEpicDialog({
       onSubmit={() => void submit()}
       canNext={!validateStep(step)}
       canSubmit
-      submitLabel="Create epic"
+      submitLabel="Salvar épico"
     >
       {step === 0 && (
         <UsForm>
           <UsFieldGrid cols={2}>
-            <UsTextField
-              id="e-title"
-              label="Title"
-              required
-              value={title}
-              onChange={setTitle}
-              placeholder="Capability name"
-            />
+            <UsTextField id="ee-title" label="Title" required value={title} onChange={setTitle} />
             <UsSelectField
-              id="e-status"
+              id="ee-status"
               label="Status"
               required
               value={status}
@@ -167,79 +174,49 @@ export function CreateEpicDialog({
               ))}
             </UsSelectField>
           </UsFieldGrid>
-          <UsTextField
-            id="e-outcome"
-            label="Outcome"
-            required
-            value={outcome}
-            onChange={setOutcome}
-            placeholder="One sentence — epic done at product level"
-          />
+          <UsTextField id="ee-outcome" label="Outcome" required value={outcome} onChange={setOutcome} />
           <VersionMultiPicker
             versions={versions}
             selectedIds={versionIds}
             onToggle={toggleVersion}
             required
           />
-          <UsField label="Profiles" hint="Profiles from 03_user_types.md">
+          <UsField label="Profiles">
             <StringListEditor items={profiles} onChange={setProfiles} placeholder="User profile" />
           </UsField>
         </UsForm>
       )}
-
       {step === 1 && (
         <UsForm>
-          <UsTextareaField
-            id="e-cap"
-            label="Capability"
-            required
-            hint="Two short paragraphs — problem → behavior."
-            value={capability}
-            onChange={setCapability}
-            placeholder="Paragraph 1: user problem today…&#10;&#10;Paragraph 2: what the product offers after…"
-            rows={8}
-          />
+          <UsTextareaField id="ee-cap" label="Capability" required value={capability} onChange={setCapability} rows={8} />
         </UsForm>
       )}
-
       {step === 2 && (
         <UsForm>
           <UsTextareaField
-            id="e-exp"
+            id="ee-exp"
             label="Expected outcome"
             required
             value={expectedOutcome}
             onChange={setExpectedOutcome}
-            placeholder="How the manager recognizes the epic is done"
             rows={3}
           />
           <UsTextareaField
-            id="e-oos"
+            id="ee-oos"
             label="Out of scope for this epic"
             required
             value={outOfScope}
             onChange={setOutOfScope}
-            placeholder="Bullets com rationale"
             rows={3}
           />
-          <UsTextareaField
-            id="e-notes"
-            label="Notes"
-            value={notes}
-            onChange={setNotes}
-            placeholder="Decisions, risks, links"
-            rows={2}
-          />
+          <UsTextareaField id="ee-notes" label="Notes" value={notes} onChange={setNotes} rows={2} />
         </UsForm>
       )}
-
       {step === 3 && (
         <div className="us-review-card">
           <p className="us-review-card__title">{title}</p>
           <p className="us-review-card__body">
-            {outcome}
-            {"\n\n"}
-            Versions: {versionIds.join(", ") || "—"}
+            Versões: {versionIds.join(", ") || "—"}
           </p>
         </div>
       )}

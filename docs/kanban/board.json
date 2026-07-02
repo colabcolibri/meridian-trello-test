@@ -860,12 +860,12 @@
     "title": "Schema version_epics e API relacional",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [],
     "done_when": "Migration version_epics aplicada; commands set/list/get derivam Included; JSON legado migrado e write path deprecado.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   },
   {
@@ -873,14 +873,14 @@
     "title": "CRUD versão com Included derivado",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [
       "US-0058"
     ],
     "done_when": "CreateVersionDialog e EditVersionDialog não aceitam Included manual; seção read-only derivada; Explicitly out editável; ProductCrudPanel abre edit wizard.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   },
   {
@@ -888,14 +888,14 @@
     "title": "CRUD épico com vínculo relacional à versão",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [
       "US-0058"
     ],
     "done_when": "CreateEpicDialog e EditEpicDialog persistem versões via set_epic_versions; version_ids_json não é mais escrito; edição completa disponível.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   },
   {
@@ -903,14 +903,14 @@
     "title": "CRUD sprint com wizard de edição",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [
       "US-0058"
     ],
     "done_when": "EditSprintDialog edita goal, done_when, out_of_scope e status; versão FK visível; create sprint mantém select de versão; blur inline de metadata removido.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   },
   {
@@ -918,7 +918,7 @@
     "title": "Hub hierárquico versão épico sprint",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [
       "US-0059",
@@ -927,7 +927,7 @@
     ],
     "done_when": "ProjectHubPage exibe drill-down versão→épicos→sprints→quadro; ProductCrudPanel plano substituído; create/edit integrados no contexto.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   },
   {
@@ -935,14 +935,14 @@
     "title": "Formulários US com selects em cascata",
     "epic": "EPIC-19",
     "version": "v5",
-    "status": "❌",
+    "status": "✅",
     "moscow": "Must",
     "depends_on": [
       "US-0058"
     ],
     "done_when": "CreateUsDialog e UsStoryModal filtram épico/sprint por versão; validação rejeita combinações incoerentes; epic fora da versão não aparece no select.",
     "tests": "required",
-    "tests_status": "pending",
+    "tests_status": "done",
     "ready": true
   }
 ]

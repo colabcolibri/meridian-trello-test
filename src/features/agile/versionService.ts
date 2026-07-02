@@ -1,4 +1,4 @@
-import type { Version, VersionStatus } from "../../domain/agileTypes";
+import type { Version, VersionIncluded, VersionIncludedEpic, VersionStatus } from "../../domain/agileTypes";
 import { tauriInvoke } from "../../lib/tauriInvoke";
 
 export interface VersionPayload {
@@ -7,7 +7,6 @@ export interface VersionPayload {
   outcome?: string | null;
   objective?: string | null;
   doneCriteria?: string | null;
-  includedJson?: string | null;
   explicitlyOut?: string | null;
   goLiveChecklistJson?: string | null;
   id?: string;
@@ -22,7 +21,7 @@ function toInput(projectId: string, payload: VersionPayload, id?: string) {
     outcome: payload.outcome ?? null,
     objective: payload.objective ?? null,
     done_criteria: payload.doneCriteria ?? null,
-    included_json: payload.includedJson ?? null,
+    included_json: null,
     explicitly_out: payload.explicitlyOut ?? null,
     go_live_checklist_json: payload.goLiveChecklistJson ?? null,
   };
@@ -38,4 +37,8 @@ export const versionService = {
     }),
   delete: (projectId: string, id: string) =>
     tauriInvoke<void>("delete_version", { projectId, id }),
+  getIncluded: (projectId: string, versionId: string) =>
+    tauriInvoke<VersionIncluded>("get_version_included", { projectId, versionId }),
 };
+
+export type { VersionIncluded, VersionIncludedEpic };

@@ -162,3 +162,14 @@ export interface ChecklistItem {
   label: string;
   done: boolean;
 }
+
+export interface VersionIncludedEpic {
+  id: string;
+  title: string;
+}
+
+export interface VersionIncluded {
+  epics: VersionIncludedEpic[];
+  story_count: number;
+  sprint_count: number;
+}

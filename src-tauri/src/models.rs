@@ -192,6 +192,26 @@ pub struct UpdateVersionInput {
     pub go_live_checklist_json: Option<String>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VersionIncludedEpic {
+    pub id: String,
+    pub title: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct VersionIncluded {
+    pub epics: Vec<VersionIncludedEpic>,
+    pub story_count: i64,
+    pub sprint_count: i64,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SetEpicVersionsInput {
+    pub project_id: String,
+    pub epic_id: String,
+    pub version_ids: Vec<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct CreateEpicInput {
     pub project_id: String,

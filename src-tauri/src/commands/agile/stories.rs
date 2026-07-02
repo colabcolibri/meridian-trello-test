@@ -1,4 +1,5 @@
 use super::ids::{first_workflow_column_id, next_story_id};
+use super::relations::validate_story_relations;
 use crate::db::DbState;
 use crate::models::{
     AcceptanceCriterion, CreateStoryInput, ListStoriesInput, MoveStoryInput, SetStoryAcceptanceInput,
@@ -365,6 +366,14 @@ pub fn create_story(
     let title = derive_title(&input.title, &i_want);
     validate_title(&title)?;
     crate::db::with_connection(&state, |conn| {
+        validate_story_relations(
+            conn,
+            &input.project_id,
+            input.epic_id.as_deref(),
+            input.version_id.as_deref(),
+            input.sprint_id.as_deref(),
+        )
+        .map_err(|msg| rusqlite::Error::InvalidParameterName(msg))?;
         let id = next_story_id(conn, &input.project_id)?;
         let now = now_iso();
         let column_id = if let Some(cid) = input.workflow_column_id {
@@ -470,6 +479,26 @@ pub fn update_story(
         if let Err(msg) = validate_status_rules(&status, &input.missing_note, &acceptance) {
             return Err(rusqlite::Error::InvalidParameterName(msg));
         }
+
+        let (cur_epic, cur_version, cur_sprint): (Option<String>, Option<String>, Option<String>) =
+            conn.query_row(
+                "SELECT epic_id, version_id, sprint_id FROM user_stories
+                 WHERE project_id = ?1 AND id = ?2",
+                params![input.project_id, input.id],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+            )?;
+
+        let epic_id = input.epic_id.as_ref().or(cur_epic.as_ref());
+        let version_id = input.version_id.as_ref().or(cur_version.as_ref());
+        let sprint_id = input.sprint_id.as_ref().or(cur_sprint.as_ref());
+        validate_story_relations(
+            conn,
+            &input.project_id,
+            epic_id.map(String::as_str),
+            version_id.map(String::as_str),
+            sprint_id.map(String::as_str),
+        )
+        .map_err(|msg| rusqlite::Error::InvalidParameterName(msg))?;
 
         let now = now_iso();
         let title = input.title.as_ref().map(|t| t.trim().to_string());

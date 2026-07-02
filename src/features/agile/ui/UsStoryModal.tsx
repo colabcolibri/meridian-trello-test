@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type {
   AcceptanceItemInput,
-  Epic,
   Moscow,
-  Sprint,
   StoryDetail,
   StoryStatus,
   StorySummary,
@@ -15,9 +13,9 @@ import {
   STORY_STATUS_OPTIONS,
 } from "../../../domain/agileConstants";
 import { validateTitle } from "../../../domain/validators";
+import { validateStoryRelations } from "../../../domain/storyRelations";
 import { invokeErrorMessage } from "../../../lib/errors";
-import { epicService } from "../epicService";
-import { sprintService } from "../sprintService";
+import { useStoryRelationOptions } from "../hooks/useStoryRelationOptions";
 import { storyService } from "../storyService";
 import { versionService } from "../versionService";
 
@@ -46,27 +44,26 @@ function parsePlanned(json: string | null): { label: string; done: boolean }[] {
 export function UsStoryModal({ projectId, storyId, onClose, onChanged }: UsStoryModalProps) {
   const [story, setStory] = useState<StoryDetail | null>(null);
   const [versions, setVersions] = useState<Version[]>([]);
-  const [epics, setEpics] = useState<Epic[]>([]);
-  const [sprints, setSprints] = useState<Sprint[]>([]);
   const [allStories, setAllStories] = useState<StorySummary[]>([]);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    const [detail, vers, eps, sprs, stories] = await Promise.all([
+    const [detail, vers, stories] = await Promise.all([
       storyService.get(projectId, storyId),
       versionService.list(projectId),
-      epicService.list(projectId),
-      sprintService.list(projectId),
       storyService.list(projectId),
     ]);
     setStory(detail);
     setVersions(vers);
-    setEpics(eps);
-    setSprints(sprs);
     setAllStories(stories.filter((s) => s.id !== storyId));
   }, [projectId, storyId]);
+
+  const { epics, sprints, epicVersionIds, sprintVersionMap } = useStoryRelationOptions(
+    projectId,
+    story?.version_id ?? "",
+  );
 
   useEffect(() => {
     void load().catch((err) => setError(invokeErrorMessage(err)));
@@ -82,6 +79,21 @@ export function UsStoryModal({ projectId, storyId, onClose, onChanged }: UsStory
     setSaving(true);
     setError(null);
     try {
+      const relationCheck = validateStoryRelations(
+        {
+          versionId: story.version_id,
+          epicId: story.epic_id,
+          sprintId: story.sprint_id,
+        },
+        epicVersionIds,
+        story.sprint_id ? sprintVersionMap.get(story.sprint_id) : null,
+      );
+      if (!relationCheck.ok) {
+        setError(relationCheck.message ?? "Relações inválidas.");
+        setSaving(false);
+        return;
+      }
+
       await storyService.update(projectId, story.id, {
         title: story.title,
         epicId: story.epic_id,
@@ -302,12 +314,19 @@ export function UsStoryModal({ projectId, storyId, onClose, onChanged }: UsStory
                 <select
                   className="w-full rounded border px-2 py-1.5"
                   value={story.version_id ?? ""}
-                  onChange={(e) => setStory({ ...story, version_id: e.target.value || null })}
+                  onChange={(e) =>
+                    setStory({
+                      ...story,
+                      version_id: e.target.value || null,
+                      epic_id: null,
+                      sprint_id: null,
+                    })
+                  }
                 >
                   <option value="">—</option>
                   {versions.map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.id}
+                      {v.id} — {v.title}
                     </option>
                   ))}
                 </select>
@@ -322,7 +341,7 @@ export function UsStoryModal({ projectId, storyId, onClose, onChanged }: UsStory
                   <option value="">—</option>
                   {epics.map((e) => (
                     <option key={e.id} value={e.id}>
-                      {e.id}
+                      {e.id} — {e.title}
                     </option>
                   ))}
                 </select>
@@ -337,7 +356,7 @@ export function UsStoryModal({ projectId, storyId, onClose, onChanged }: UsStory
                   <option value="">—</option>
                   {sprints.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.id}
+                      {s.id} — {s.title}
                     </option>
                   ))}
                 </select>

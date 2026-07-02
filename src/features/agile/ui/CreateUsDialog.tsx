@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import type { AcceptanceItemInput, ChecklistItem, Epic, Moscow, Sprint, Version } from "../../../domain/agileTypes";
+import type { AcceptanceItemInput, ChecklistItem, Moscow } from "../../../domain/agileTypes";
 import { DEFAULT_AS_ROLE, MOSCOW_OPTIONS } from "../../../domain/agileConstants";
+import { validateStoryRelations } from "../../../domain/storyRelations";
 import { stringifyChecklist } from "../../../domain/meridianJson";
 import { invokeErrorMessage } from "../../../lib/errors";
-import { epicService } from "../epicService";
-import { sprintService } from "../sprintService";
+import { useStoryRelationOptions } from "../hooks/useStoryRelationOptions";
 import { storyService, type CreateStoryPayload } from "../storyService";
-import { versionService } from "../versionService";
 import { AcceptanceEditor, ChecklistEditor } from "./ListFieldEditor";
 import { MeridianWizardShell, type WizardStep } from "./MeridianWizardShell";
 import {
@@ -68,10 +67,6 @@ export function CreateUsDialog({
   onCreated,
 }: CreateUsDialogProps) {
   const [step, setStep] = useState(0);
-  const [versions, setVersions] = useState<Version[]>([]);
-  const [epics, setEpics] = useState<Epic[]>([]);
-  const [sprints, setSprints] = useState<Sprint[]>([]);
-  const [loadingMeta, setLoadingMeta] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,29 +91,21 @@ export function CreateUsDialog({
   const [moscow, setMoscow] = useState<Moscow>("Must");
   const [acceptance, setAcceptance] = useState<string[]>(["", ""]);
 
-  useEffect(() => {
-    void (async () => {
-      try {
-        const [vers, eps, sprs] = await Promise.all([
-          versionService.list(projectId),
-          epicService.list(projectId),
-          sprintService.list(projectId),
-        ]);
-        setVersions(vers);
-        setEpics(eps);
-        setSprints(sprs);
-      } catch (err) {
-        setError(invokeErrorMessage(err));
-      } finally {
-        setLoadingMeta(false);
-      }
-    })();
-  }, [projectId]);
+  const { versions, epics, sprints, epicVersionIds, sprintVersionMap, loading: loadingMeta } =
+    useStoryRelationOptions(projectId, versionId);
 
-  const filteredSprints = useMemo(() => {
-    if (!versionId) return sprints;
-    return sprints.filter((s) => s.version_id === versionId);
-  }, [sprints, versionId]);
+  useEffect(() => {
+    if (epicId && !epics.some((e) => e.id === epicId)) setEpicId("");
+    if (sprintId && !sprints.some((s) => s.id === sprintId)) setSprintId("");
+  }, [epics, sprints, epicId, sprintId]);
+
+  const handleVersionChange = (nextVersionId: string) => {
+    setVersionId(nextVersionId);
+    setEpicId("");
+    setSprintId("");
+  };
+
+  const filteredSprints = useMemo(() => sprints, [sprints]);
 
   const validateStep = (index: number): string | null => {
     if (index === 0) {
@@ -177,6 +164,17 @@ export function CreateUsDialog({
     setSaving(true);
     setError(null);
     try {
+      const relationCheck = validateStoryRelations(
+        { versionId: versionId || null, epicId: epicId || null, sprintId: sprintId || null },
+        epicVersionIds,
+        sprintId ? sprintVersionMap.get(sprintId) : null,
+      );
+      if (!relationCheck.ok) {
+        setError(relationCheck.message ?? "Relações inválidas.");
+        setSaving(false);
+        return;
+      }
+
       const acceptanceItems: AcceptanceItemInput[] = acceptance
         .map((text) => text.trim())
         .filter(Boolean)
@@ -300,7 +298,7 @@ export function CreateUsDialog({
                   </option>
                 ))}
               </UsSelectField>
-              <UsSelectField id="us-version" label="Version" value={versionId} onChange={setVersionId}>
+              <UsSelectField id="us-version" label="Version" value={versionId} onChange={handleVersionChange}>
                 <option value="">—</option>
                 {versions.map((v) => (
                   <option key={v.id} value={v.id}>

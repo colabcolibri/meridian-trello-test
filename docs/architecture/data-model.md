@@ -22,6 +22,7 @@ Migration base `20260702191744_agile_schema.sql`. Hierarquia: `projects` → `ve
 | `versions` | Release (`v1`, `v2`…) |
 | `epics` | Capability (`EPIC-01`…) |
 | `sprints` | Timebox (`v1-S1`…) |
+| `version_epics` | Junção N:N épico ↔ versão (substitui write em `version_ids_json`) |
 | `workflow_columns` | Colunas do quadro (Backlog → Concluída) |
 | `user_stories` | US (`US-0001`…) com Intent/Plan/Boundaries |
 | `acceptance_criteria` | Checklist de aceite |
@@ -58,4 +59,4 @@ Pasta `src-tauri/migrations/` — prefixo `YYYYMMDDHHMMSS`.
 - `20260702173000_initial_schema.sql` — bootstrap (`app_preferences`; tabelas v1 removidas depois)
 - `20260702191744_agile_schema.sql` — gestão agile v3
 - `20260702193000_us_meridian_v2.sql` — campos schema v2 + coluna Refine
-- `20260702193736_drop_kanban_v1.sql` — remove boards/columns/cards/tags/checklist
+- `20260702230555_version_epics.sql` — junction épico↔versão + backfill JSON legado

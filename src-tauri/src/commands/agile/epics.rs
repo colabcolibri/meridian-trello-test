@@ -69,7 +69,7 @@ pub fn create_epic(state: State<'_, DbState>, input: CreateEpicInput) -> Result<
                 input.out_of_scope.filter(|s| !s.trim().is_empty()),
                 input.notes.filter(|s| !s.trim().is_empty()),
                 input.profiles_json.filter(|s| !s.trim().is_empty()),
-                input.version_ids_json.filter(|s| !s.trim().is_empty()),
+                None::<String>,
                 now,
                 now
             ],
@@ -92,8 +92,8 @@ pub fn update_epic(state: State<'_, DbState>, input: UpdateEpicInput) -> Result<
         conn.execute(
             "UPDATE epics SET
                 title = ?1, status = ?2, outcome = ?3, capability = ?4, expected_outcome = ?5,
-                out_of_scope = ?6, notes = ?7, profiles_json = ?8, version_ids_json = ?9, updated_at = ?10
-             WHERE project_id = ?11 AND id = ?12",
+                out_of_scope = ?6, notes = ?7, profiles_json = ?8, updated_at = ?9
+             WHERE project_id = ?10 AND id = ?11",
             params![
                 title,
                 input.status,
@@ -103,7 +103,6 @@ pub fn update_epic(state: State<'_, DbState>, input: UpdateEpicInput) -> Result<
                 input.out_of_scope,
                 input.notes,
                 input.profiles_json,
-                input.version_ids_json,
                 now,
                 input.project_id,
                 input.id
