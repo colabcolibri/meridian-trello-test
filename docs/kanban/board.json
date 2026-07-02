@@ -1,0 +1,391 @@
+[
+  {
+    "id": "US-0001",
+    "title": "Scaffold Tauri Vite React TypeScript",
+    "epic": "EPIC-01",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [],
+    "done_when": "pnpm tauri dev abre janela do app com React montado e scripts documentados no package.json.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0002",
+    "title": "Migration SQLite schema inicial",
+    "epic": "EPIC-01",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0001"
+    ],
+    "done_when": "Migration inicial cria todas as tabelas do data-model e roda automaticamente no primeiro start.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0003",
+    "title": "Commands Tauri e tipos de domínio",
+    "epic": "EPIC-01",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0002"
+    ],
+    "done_when": "invoke list_boards e create_board funcionam do frontend com tipos TypeScript espelhados.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0004",
+    "title": "Shell app rota inicial workspace",
+    "epic": "EPIC-02",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0003"
+    ],
+    "done_when": "App abre em / sem landing page; exibe layout workspace ou redireciona conforme last_board_id.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0005",
+    "title": "CRUD de quadros",
+    "epic": "EPIC-02",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0004"
+    ],
+    "done_when": "Usuário cria, renomeia, seleciona e exclui quadros com persistência SQLite.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0006",
+    "title": "Persistir último quadro usado",
+    "epic": "EPIC-02",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0005"
+    ],
+    "done_when": "Reabrir app abre último quadro selecionado; trocar quadro atualiza preferência.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0007",
+    "title": "Layout colunas com scroll horizontal",
+    "epic": "EPIC-03",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0006"
+    ],
+    "done_when": "Visão do quadro exibe colunas em faixa horizontal com scroll quando overflow.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0008",
+    "title": "CRUD e reordenação de colunas",
+    "epic": "EPIC-03",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0007"
+    ],
+    "done_when": "Usuário cria, renomeia, reordena e exclui colunas; ordem persiste após reload.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0009",
+    "title": "Criar cartões com título obrigatório",
+    "epic": "EPIC-04",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0008"
+    ],
+    "done_when": "Adicionar cartão em coluna exige título; cartão persiste e aparece na lista.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0010",
+    "title": "Visual compacto do cartão",
+    "epic": "EPIC-04",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0009"
+    ],
+    "done_when": "Card compacto mostra título e metadados disponíveis (tags, prioridade, vencimento, checklist).",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0011",
+    "title": "Mover e reordenar cartões pré-DnD",
+    "epic": "EPIC-04",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0009"
+    ],
+    "done_when": "Usuário move cartão entre colunas e reordena na coluna via UI; ordem persiste.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0012",
+    "title": "Excluir duplicar e arquivar cartões",
+    "epic": "EPIC-04",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0009"
+    ],
+    "done_when": "Usuário exclui, duplica e arquiva cartões; arquivados somem da coluna padrão.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0013",
+    "title": "Modal de detalhes do cartão",
+    "epic": "EPIC-05",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0010"
+    ],
+    "done_when": "Clicar cartão abre modal com título e descrição editáveis; alterações persistem.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0014",
+    "title": "Etiquetas coloridas por quadro",
+    "epic": "EPIC-05",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0013"
+    ],
+    "done_when": "Usuário cria tags no quadro, associa ao cartão no modal; compacto mostra chips coloridos.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0015",
+    "title": "Checklist interno no cartão",
+    "epic": "EPIC-05",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0013"
+    ],
+    "done_when": "Modal gerencia itens de checklist; toggle concluído persiste; compacto mostra progresso.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0016",
+    "title": "Data de vencimento e indicador de atraso",
+    "epic": "EPIC-05",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0013"
+    ],
+    "done_when": "Modal define due_date; compacto e modal destacam visualmente cartões vencidos.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0017",
+    "title": "Prioridade observações e datas read-only",
+    "epic": "EPIC-05",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0013"
+    ],
+    "done_when": "Modal edita prioridade e observações; exibe created_at e updated_at read-only.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0018",
+    "title": "Drag and drop de cartões",
+    "epic": "EPIC-06",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0011"
+    ],
+    "done_when": "Arrastar cartão entre colunas ou dentro da coluna persiste ordem após reload.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0019",
+    "title": "Layout responsivo notebook e desktop",
+    "epic": "EPIC-06",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0007"
+    ],
+    "done_when": "UI kanban utilizável em 1024px e 1440px sem overflow horizontal no body.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0020",
+    "title": "README install dev e build",
+    "epic": "EPIC-07",
+    "version": "v1",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0018"
+    ],
+    "done_when": "README na raiz permite novo dev instalar, rodar tauri dev e tauri build com sucesso.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0021",
+    "title": "Corrigir DnD entre colunas sem clone",
+    "epic": "EPIC-08",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0018"
+    ],
+    "done_when": "Arrastar cartão entre colunas move um único item; ordem persiste após reload; cancelar arraste restaura layout.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0022",
+    "title": "Design tokens e fundo do board estilo Trello",
+    "epic": "EPIC-09",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0020"
+    ],
+    "done_when": "Board usa tokens Trello-like (tipografia, cores, sombras); fundo do quadro não é cinza genérico de protótipo.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0023",
+    "title": "Colunas e header do quadro estilo Trello",
+    "epic": "EPIC-09",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0022"
+    ],
+    "done_when": "Colunas e header do board seguem padrão Trello: título, ações discretas, botão adicionar cartão, scroll horizontal suave.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0024",
+    "title": "Cartão compacto e overlay de arraste estilo Trello",
+    "epic": "EPIC-09",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0021",
+      "US-0022"
+    ],
+    "done_when": "Cartões na coluna e overlay durante drag seguem estilo Trello; labels, badges e hover refinados.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0025",
+    "title": "Modal de detalhe e lista de quadros estilo Trello",
+    "epic": "EPIC-09",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0022"
+    ],
+    "done_when": "Modal de cartão e tela de quadros usam mesmo design system Trello-like; fluxo criar/abrir quadro polido.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0026",
+    "title": "Corrigir modal de cartão get_card JSON",
+    "epic": "EPIC-08",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0025"
+    ],
+    "done_when": "Clicar em cartão abre modal com título e campos editáveis; sem TypeError card.title.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  }
+]

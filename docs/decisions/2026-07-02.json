@@ -1,0 +1,32 @@
+{
+  "date": "2026-07-02",
+  "entries": [
+    {
+      "time": "18:30",
+      "title": "Versão v2 — UX Trello e correção DnD",
+      "affected_document": "docs/versions/v2.md",
+      "what_changed": "Criada v2 com EPIC-08 (regressão DnD), EPIC-09 (visual Trello), sprint v2-S1 e US-0021 a US-0025.",
+      "why_changed": "Dogfood pós-v1: arraste entre colunas clona visualmente; UI genérica não atende expectativa Trello do escopo.",
+      "impact": "v1 permanece entregue; novo trabalho via /refine-us e /implement-us nas US v2. Correção DnD iniciada em BoardView.tsx aguarda fechamento formal de US-0021.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "17:29",
+      "title": "Projeto iniciado com Meridian",
+      "affected_document": "docs/",
+      "what_changed": "Estrutura Meridian criada com escopo, arquitetura, backlog v1 e épicos.",
+      "why_changed": "Início do produto Kanban local com governança document-first.",
+      "impact": "Fase docs aprovadas para gate; épicos, sprints e US criados em draft.",
+      "responsible": "gestor"
+    },
+    {
+      "time": "17:30",
+      "title": "Stack Tauri + SQLite para app local",
+      "affected_document": "docs/01_tech_stack.md",
+      "what_changed": "Adotado Tauri 2 com Vite/React/TS e SQLite embarcado; descartada stack web+Node para v1.",
+      "why_changed": "Priorizar simplicidade de instalação, binário único e estabilidade offline.",
+      "impact": "US de scaffold e persistência seguem commands Tauri; README deve documentar Rust toolchain.",
+      "responsible": "gestor"
+    }
+  ]
+}

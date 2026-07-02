@@ -1,0 +1,65 @@
+---
+description: Meridian protocol — docs before code, human manager, agent routing via .agent and .cursor
+alwaysApply: true
+---
+
+# Meridian (Cursor)
+
+This workspace uses the Meridian protocol. The canonical kit source is `.agent/`; Cursor reads this rule and mirrors under `.cursor/`.
+
+## Required reading
+
+1. `.agent/MERIDIAN.md` — master protocol
+2. `.agent/rules/MERIDIAN.md` — P0 rules (equivalent to this rule)
+3. Agent in `.cursor/agents/` or `.agent/agents/` per the request
+4. Skills listed in the agent frontmatter → `.cursor/skills/{name}/SKILL.md`
+5. Creating/closing epic, version, sprint, or US → `.agent/references/templates/INDEX.md` + full template + `section-contracts.md` **before** Write
+
+Priority: **P0 rules > P1 agent + MERIDIAN.md > P2 skills**.
+
+## Short rules
+
+- `docs/` of the **active Meridian product** is the source of truth (monorepos may have several `docs/` trees — see `.meridian/projects.json` and `projects-manifest-template.md`).
+- Documentation precedes product code.
+- Do not create US before `05_architecture` `approved`.
+- `docs/kanban/board.json` is derived from `docs/us/*.md`.
+- Never `✅` without evidence; never `🔶` without `Missing:` in acceptance.
+- Never `✅` without filled `## Record` on the US (skill `complete-user-story`).
+- Product code for a US requires `ready: true` — use `/implement-us US-XXXX` (skill `implement-user-story`) before coding.
+- `docs/decisions/YYYY-MM-DD.json`: prepend in `entries`; never edit old entries. **Before Write:** run `date +"%Y-%m-%d"` and `date +"%H:%M"` — use `/update-decisions-log` or skill `update-decisions-log`.
+- Structural contract for US/epic/version: `.agent/references/templates/section-contracts.md` (validated by script + monitor).
+- Routing: skill `meridian-routing` or specialized agents.
+- Announce: `🤖 Applying knowledge from @[agent-name]...` before specialized work.
+
+## Slash commands (Cursor)
+
+| Command | File |
+| ------- | ---- |
+| `/init-meridian` | `.cursor/commands/init-meridian.md` |
+| `/status` | `.cursor/commands/status.md` |
+| `/plan-sprint` | `.cursor/commands/plan-sprint.md` |
+| `/create-version` | `.cursor/commands/create-version.md` |
+| `/create-epic` | `.cursor/commands/create-epic.md` |
+| `/create-us` | `.cursor/commands/create-us.md` |
+| `/review-us` | `.cursor/commands/review-us.md` |
+| `/refine-us` | `.cursor/commands/refine-us.md` |
+| `/implement-us` | `.cursor/commands/implement-us.md` |
+| `/complete-us` | `.cursor/commands/complete-us.md` |
+| `/complete-sprint` | `.cursor/commands/complete-sprint.md` |
+| `/architecture` | `.cursor/commands/architecture.md` |
+| `/security-pass` | `.cursor/commands/security-pass.md` |
+| `/sync-board` | `.cursor/commands/sync-board.md` |
+| `/update-decisions-log` | `.cursor/commands/update-decisions-log.md` |
+| `/daily-with-ai` | `.cursor/commands/daily-with-ai.md` |
+| `/agents-help` | `.cursor/commands/agents-help.md` |
+
+Human reference (groups + numbered steps): `.agent/references/agents-help.md`
+
+Maintainer map (protocol change → which files to edit): `.agent/references/instruction-surfaces.md`
+
+## Validate project
+
+```bash
+python3 .agent/scripts/validate_meridian.py <project-folder>
+python3 .agent/scripts/validate_meridian.py <project-folder> --json
+```

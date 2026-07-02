@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "./trello-theme.css";
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+.kanban-scroll {
+  min-height: calc(100vh - 4.5rem);
+}
