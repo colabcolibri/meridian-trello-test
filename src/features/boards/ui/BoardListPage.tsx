@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { validateName } from "../../../domain/validators";
 import type { Board } from "../../../domain/types";
 import { boardService } from "../boardService";
@@ -21,6 +21,9 @@ function boardGradient(id: string) {
 
 export function BoardListPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const showWorkspace =
+    (location.state as { showWorkspace?: boolean } | null)?.showWorkspace === true;
   const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState(true);
   const [newName, setNewName] = useState("");
@@ -39,14 +42,16 @@ export function BoardListPage() {
   useEffect(() => {
     void (async () => {
       try {
-        const lastId = await boardService.getLastBoardId();
-        if (lastId) {
-          try {
-            await boardService.get(lastId);
-            navigate(`/boards/${lastId}`, { replace: true });
-            return;
-          } catch {
-            await boardService.setLastBoardId(null);
+        if (!showWorkspace) {
+          const lastId = await boardService.getLastBoardId();
+          if (lastId) {
+            try {
+              await boardService.get(lastId);
+              navigate(`/boards/${lastId}`, { replace: true });
+              return;
+            } catch {
+              await boardService.setLastBoardId(null);
+            }
           }
         }
         await load();
@@ -55,7 +60,7 @@ export function BoardListPage() {
         setLoading(false);
       }
     })();
-  }, [navigate]);
+  }, [navigate, showWorkspace]);
 
   const createBoard = async () => {
     const err = validateName(newName);

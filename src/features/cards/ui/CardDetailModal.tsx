@@ -42,6 +42,10 @@ export function CardDetailModal({
   const [boardTags, setBoardTags] = useState<Tag[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showNewLabel, setShowNewLabel] = useState(false);
+  const [newLabelName, setNewLabelName] = useState("");
+  const [newLabelColor, setNewLabelColor] = useState<string>(TAG_COLORS[0].value);
+  const [labelError, setLabelError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -92,12 +96,27 @@ export function CardDetailModal({
   };
 
   const addTag = async () => {
-    const name = window.prompt("Label name");
-    if (!name?.trim()) return;
-    const color = TAG_COLORS[0].value;
-    await tagService.create(boardId, name.trim(), color);
-    const tags = await tagService.list(boardId);
-    setBoardTags(tags);
+    const name = newLabelName.trim();
+    if (!name) {
+      setLabelError("Label name cannot be empty");
+      return;
+    }
+    setLabelError(null);
+    try {
+      const created = await tagService.create(boardId, name, newLabelColor);
+      const currentIds = detail?.tags.map((t) => t.id) ?? [];
+      const cardTags = await tagService.setCardTags(cardId, [...currentIds, created.id]);
+      const allBoardTags = await tagService.list(boardId);
+      setBoardTags(allBoardTags);
+      if (detail) {
+        setDetail({ ...detail, tags: cardTags });
+      }
+      setNewLabelName("");
+      setShowNewLabel(false);
+      onChanged();
+    } catch (err) {
+      setLabelError(err instanceof Error ? err.message : "Failed to create label");
+    }
   };
 
   const saveChecklistItem = async (item: ChecklistItem) => {
@@ -141,58 +160,57 @@ export function CardDetailModal({
   return (
     <>
       <div className="trello-modal-overlay fixed inset-0 z-40" onClick={onClose} aria-hidden />
-      <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:p-10">
+      <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 md:py-10">
         <div
-          className="trello-modal my-4 w-full max-w-4xl bg-[#f4f5f7]"
+          className="trello-modal my-2 w-full max-w-[768px] overflow-hidden rounded-xl bg-white shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative px-6 pb-2 pt-5 md:px-8">
+          <div className="relative border-b border-[#091e4214] px-6 py-4 pr-14">
             <button
               type="button"
               onClick={onClose}
-              className="absolute right-3 top-3 rounded p-2 text-[var(--trello-text-muted)] hover:bg-[#091e4214]"
+              className="absolute right-3 top-3 rounded-md p-2 text-[var(--trello-text-muted)] hover:bg-[#091e4214]"
               aria-label="Close"
             >
               ✕
             </button>
-            <div className="flex items-start gap-2 pr-8">
-              <span className="mt-1 text-[var(--trello-text-muted)]" aria-hidden>
-                ▢
-              </span>
-              <input
-                className="w-full bg-transparent text-xl font-semibold text-[var(--trello-text-primary)] outline-none"
-                value={card.title}
-                onChange={(e) =>
-                  setDetail({ ...detail, card: { ...card, title: e.target.value } })
-                }
-                onBlur={() => {
-                  const err = validateTitle(card.title);
-                  if (err) {
-                    setError(err);
-                    return;
-                  }
-                  setError(null);
-                  void patch({ id: card.id, title: card.title });
-                }}
-              />
-            </div>
-            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-            <p className="mt-2 text-xs text-[var(--trello-text-muted)]">
+            <p className="text-xs font-medium text-[var(--trello-text-muted)]">
               in list{" "}
-              <span className="underline">
+              <span className="font-semibold text-[var(--trello-text-secondary)]">
                 {columnOptions.find((c) => c.id === card.column_id)?.name ?? "—"}
               </span>
             </p>
+            <input
+              className="mt-2 w-full bg-transparent text-xl font-semibold leading-tight text-[var(--trello-text-primary)] outline-none placeholder:text-[var(--trello-text-muted)]"
+              placeholder="Card title"
+              value={card.title}
+              onChange={(e) =>
+                setDetail({ ...detail, card: { ...card, title: e.target.value } })
+              }
+              onBlur={() => {
+                const err = validateTitle(card.title);
+                if (err) {
+                  setError(err);
+                  return;
+                }
+                setError(null);
+                void patch({ id: card.id, title: card.title });
+              }}
+            />
+            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
           </div>
 
-          <div className="grid gap-0 md:grid-cols-[minmax(0,1fr)_200px]">
-            <div className="space-y-5 px-6 pb-6 md:px-8">
+          <div className="grid md:grid-cols-[minmax(0,1fr)_200px]">
+            <div className="space-y-6 p-6">
               <section>
-                <h3 className="mb-2 text-sm font-semibold text-[var(--trello-text-primary)]">
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-[var(--trello-text-primary)]">
+                  <span className="text-[var(--trello-text-muted)]" aria-hidden>
+                    ☰
+                  </span>
                   Description
                 </h3>
                 <textarea
-                  className="w-full rounded-lg border border-[#091e4221] bg-white p-3 text-sm text-[var(--trello-text-primary)] shadow-sm outline-none focus:border-[var(--trello-accent)]"
+                  className="w-full rounded-lg border border-[#091e4221] bg-[#fafbfc] p-3 text-sm text-[var(--trello-text-primary)] shadow-inner outline-none focus:border-[var(--trello-accent)] focus:bg-white"
                   rows={4}
                   placeholder="Add a more detailed description…"
                   value={card.description ?? ""}
@@ -317,14 +335,14 @@ export function CardDetailModal({
               </section>
             </div>
 
-            <aside className="border-t border-[#091e4214] bg-[#ebecf0] px-4 py-4 md:border-l md:border-t-0 md:px-3">
-              <p className="mb-3 text-xs font-semibold text-[var(--trello-text-secondary)]">
+            <aside className="border-t border-[#091e4214] bg-[#f4f5f7] p-4 md:border-l md:border-t-0">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--trello-text-secondary)]">
                 Add to card
               </p>
 
               <SidebarField label="List">
                 <select
-                  className="w-full rounded bg-[#091e4214] px-2 py-1.5 text-sm outline-none hover:bg-[#091e4221]"
+                  className="trello-modal-field w-full"
                   value={card.column_id}
                   onChange={(e) => {
                     void cardService.moveToColumn(card.id, e.target.value).then(() => {
@@ -343,7 +361,7 @@ export function CardDetailModal({
 
               <SidebarField label="Priority">
                 <select
-                  className="w-full rounded bg-[#091e4214] px-2 py-1.5 text-sm outline-none hover:bg-[#091e4221]"
+                  className="trello-modal-field w-full"
                   value={card.priority ?? ""}
                   onChange={(e) => {
                     const priority = e.target.value;
@@ -363,7 +381,7 @@ export function CardDetailModal({
               <SidebarField label="Due date">
                 <input
                   type="date"
-                  className="w-full rounded bg-[#091e4214] px-2 py-1.5 text-sm outline-none hover:bg-[#091e4221]"
+                  className="trello-modal-field w-full"
                   value={toDateInputValue(card.due_date)}
                   onChange={(e) => {
                     const due_date = e.target.value;
@@ -390,22 +408,77 @@ export function CardDetailModal({
                     );
                   })}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => void addTag()}
-                  className="trello-btn-ghost mt-2 w-full px-2 py-1.5 text-left text-sm"
-                >
-                  ＋ New label
-                </button>
+                {showNewLabel ? (
+                  <div className="mt-2 space-y-2 rounded-lg border border-[#091e4221] bg-white p-2">
+                    <input
+                      className="trello-modal-field w-full"
+                      placeholder="Label name"
+                      value={newLabelName}
+                      autoFocus
+                      onChange={(e) => setNewLabelName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") void addTag();
+                        if (e.key === "Escape") {
+                          setShowNewLabel(false);
+                          setNewLabelName("");
+                          setLabelError(null);
+                        }
+                      }}
+                    />
+                    <div className="flex flex-wrap gap-1">
+                      {TAG_COLORS.map((c) => (
+                        <button
+                          key={c.value}
+                          type="button"
+                          title={c.name}
+                          className={`h-6 w-8 rounded ${newLabelColor === c.value ? "ring-2 ring-[var(--trello-text-primary)] ring-offset-1" : ""}`}
+                          style={{ backgroundColor: c.value }}
+                          onClick={() => setNewLabelColor(c.value)}
+                        />
+                      ))}
+                    </div>
+                    {labelError && (
+                      <p className="text-xs text-red-600">{labelError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        className="trello-btn-primary px-3 py-1.5 text-xs"
+                        onClick={() => void addTag()}
+                      >
+                        Add label
+                      </button>
+                      <button
+                        type="button"
+                        className="trello-btn-ghost px-2 py-1.5 text-xs"
+                        onClick={() => {
+                          setShowNewLabel(false);
+                          setNewLabelName("");
+                          setLabelError(null);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowNewLabel(true)}
+                    className="trello-btn-ghost mt-2 w-full px-2 py-1.5 text-left text-sm"
+                  >
+                    ＋ New label
+                  </button>
+                )}
               </SidebarField>
 
-              <p className="mb-3 mt-4 text-xs font-semibold text-[var(--trello-text-secondary)]">
+              <p className="mb-2 mt-5 text-[11px] font-semibold uppercase tracking-wide text-[var(--trello-text-secondary)]">
                 Actions
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1.5">
                 <button
                   type="button"
-                  className="trello-btn-ghost w-full px-2 py-1.5 text-left text-sm"
+                  className="trello-modal-action"
                   onClick={() =>
                     void cardService.duplicate(card.id).then(() => {
                       onChanged();
@@ -417,7 +490,7 @@ export function CardDetailModal({
                 </button>
                 <button
                   type="button"
-                  className="trello-btn-ghost w-full px-2 py-1.5 text-left text-sm"
+                  className="trello-modal-action"
                   onClick={() =>
                     void cardService.archive(card.id, true).then(() => {
                       onChanged();
@@ -429,7 +502,7 @@ export function CardDetailModal({
                 </button>
                 <button
                   type="button"
-                  className="trello-btn-ghost w-full px-2 py-1.5 text-left text-sm text-red-600 hover:bg-red-50"
+                  className="trello-modal-action text-red-700 hover:bg-red-50"
                   onClick={() => setConfirmDelete(true)}
                 >
                   Delete

@@ -34,7 +34,7 @@ function SortableCard({
   card: CardSummary;
   onOpen: (id: string) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
     useSortable({ id: card.id, data: { type: "card", columnId: card.column_id } });
 
   const style = {
@@ -49,7 +49,22 @@ function SortableCard({
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="group relative rounded-lg"
+      {...attributes}
+    >
+      <button
+        type="button"
+        ref={setActivatorNodeRef}
+        {...listeners}
+        className="absolute right-1 top-1 z-10 cursor-grab rounded px-1 py-0.5 text-xs text-[var(--trello-text-muted)] opacity-0 transition hover:bg-[#091e4214] group-hover:opacity-100 active:cursor-grabbing"
+        aria-label="Drag card"
+        onClick={(e) => e.stopPropagation()}
+      >
+        ⠿
+      </button>
       <CardCompact card={card} onClick={() => onOpen(card.id)} />
     </div>
   );
@@ -402,7 +417,7 @@ export function BoardView() {
   return (
     <div className="trello-board-shell flex min-h-screen flex-col">
       <header className="trello-board-header flex flex-wrap items-center gap-3 px-4 py-3 md:px-5">
-        <Link to="/" className="text-sm font-medium">
+        <Link to="/" state={{ showWorkspace: true }} className="text-sm font-medium">
           ← Boards
         </Link>
         <h1 className="text-base font-semibold md:text-lg">{board.name}</h1>

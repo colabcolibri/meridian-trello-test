@@ -387,5 +387,80 @@
     "tests": "required",
     "tests_status": "done",
     "ready": true
+  },
+  {
+    "id": "US-0027",
+    "title": "Back to Boards sem redirect loop",
+    "epic": "EPIC-10",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0006"
+    ],
+    "done_when": "Clicar ← Boards exibe grid de quadros; auto-resume só ocorre ao abrir app sem intenção explícita.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0028",
+    "title": "Metadados visíveis no cartão compacto",
+    "epic": "EPIC-10",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0024"
+    ],
+    "done_when": "Cartão na coluna exibe labels com nome, due date, prioridade e checklist quando presentes.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0029",
+    "title": "Modal de cartão visual polish",
+    "epic": "EPIC-10",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0025"
+    ],
+    "done_when": "Modal branco centralizado, header claro, sidebar de ações e campos legíveis estilo Trello.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0030",
+    "title": "Drag handle separado do clique no cartão",
+    "epic": "EPIC-10",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0021"
+    ],
+    "done_when": "Clicar no cartão abre modal; arrastar usa handle lateral visível no hover.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0031",
+    "title": "Criar label inline e aplicar ao cartão",
+    "epic": "EPIC-10",
+    "version": "v2",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0014"
+    ],
+    "done_when": "New label cria tag, aplica ao cartão atual e aparece no modal e compacto sem window.prompt.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
   }
 ]

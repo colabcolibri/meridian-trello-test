@@ -153,6 +153,34 @@ body {
   background: #091e420a;
 }
 
+.trello-modal-field {
+  border-radius: 4px;
+  background: #091e4214;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.trello-modal-field:hover,
+.trello-modal-field:focus {
+  background: #091e4221;
+}
+
+.trello-modal-action {
+  width: 100%;
+  border-radius: 4px;
+  background: #091e4214;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--trello-text-primary);
+  transition: background 0.15s ease;
+}
+
+.trello-modal-action:hover {
+  background: #091e4221;
+}
+
 @media (min-width: 1024px) {
   .kanban-column {
     min-width: 272px;

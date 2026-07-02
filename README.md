@@ -414,6 +414,36 @@ Deep dive: [Meridian protocol](https://github.com/colabcolibri/meridian) · [`.a
 
 ---
 
+## Tech stack (demo app)
+
+The Kanban app was built with **Tauri 2** (desktop shell + Rust backend) and a **React** frontend. Full spec in [`docs/01_tech_stack.md`](docs/01_tech_stack.md).
+
+| Layer | Technologies |
+| --- | --- |
+| **Desktop** | [Tauri 2](https://v2.tauri.app/) — native window, IPC, app data dir |
+| **Backend** | [Rust](https://www.rust-lang.org/) — Tauri commands, business logic |
+| **Database** | [SQLite 3](https://www.sqlite.org/) via [rusqlite](https://github.com/rusqlite/rusqlite) (bundled), SQL migrations |
+| **Frontend** | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
+| **Bundler** | [Vite 7](https://vite.dev/) |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) |
+| **Routing** | [React Router 7](https://reactrouter.com/) |
+| **Drag and drop** | [@dnd-kit](https://dndkit.com/) |
+| **Package manager** | [pnpm](https://pnpm.io/) |
+| **Lint** | ESLint 9 + typescript-eslint |
+
+**Why Tauri over Node?** Logged in [`docs/decisions/2026-07-02.json`](docs/decisions/2026-07-02.json) — single binary, offline SQLite, no separate server. Node/Fastify was considered in the initial prompt and discarded for v1.
+
+**Project layout:**
+
+```text
+src/           React + TypeScript (UI, features, domain types)
+src-tauri/     Rust (commands, db, migrations)
+docs/          Meridian spec (source of truth for agents)
+.agent/        Meridian harness kit
+```
+
+---
+
 ## How to run the app
 
 ### Prerequisites
