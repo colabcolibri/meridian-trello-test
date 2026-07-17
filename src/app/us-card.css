@@ -1,0 +1,131 @@
+/* US Meridian card — distinct from trello-card task cards (US-0050) */
+
+.us-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid #c4cad4;
+  border-left: 3px solid var(--trello-accent);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.75rem 0.875rem;
+  text-align: left;
+  box-shadow: 0 1px 3px rgb(9 30 66 / 10%);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.us-card:hover {
+  border-color: #8c9bab;
+  border-left-color: #026aa7;
+  box-shadow: 0 4px 12px rgb(9 30 66 / 14%);
+  transform: translateY(-1px);
+}
+
+.us-card--overlay {
+  box-shadow: 0 4px 12px rgb(9 30 66 / 18%);
+}
+
+.us-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.375rem;
+}
+
+.us-card__id {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--trello-text-muted);
+}
+
+.us-card__badge {
+  border-radius: 4px;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.us-card__status {
+  margin-left: auto;
+  font-size: 0.875rem;
+}
+
+.us-card__ready--muted {
+  opacity: 0.45;
+}
+
+.us-card__preamble {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--trello-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.us-card__preamble strong {
+  font-weight: 600;
+  color: var(--trello-text-primary);
+}
+
+.us-card__section-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--trello-text-muted);
+  margin-bottom: 0.125rem;
+}
+
+.us-card__why,
+.us-card__done-when {
+  margin-bottom: 0.375rem;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--trello-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.us-card__acceptance {
+  margin-top: 0.25rem;
+  padding-top: 0.375rem;
+  border-top: 1px dashed #091e421a;
+}
+
+.us-card__acceptance ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.us-card__acceptance li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  color: var(--trello-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.us-card__acceptance li.is-done {
+  text-decoration: line-through;
+  opacity: 0.65;
+}
+
+.us-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+  font-size: 0.625rem;
+  color: var(--trello-text-muted);
+}
+
+.us-card__blocked {
+  color: #b45309;
+  font-weight: 600;
+}

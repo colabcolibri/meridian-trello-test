@@ -51,8 +51,14 @@ flowchart LR
 | **Tag** | id, board_id, name, color |
 | **CardTag** | card_id, tag_id |
 | **ChecklistItem** | id, card_id, text, completed, order |
+| **Project** (v3) | id, name, description, timestamps |
+| **Version** | id, project_id, title, status, outcome |
+| **Epic** | id, project_id, title, status, outcome |
+| **Sprint** | id, project_id, version_id, title, status, goal |
+| **UserStory** | id, project_id, epic/version/sprint FKs, Intent/Plan fields, workflow_column_id, order |
+| **AcceptanceCriterion** | id, story_id, text, checked, order |
 
-Status do cartão = coluna onde está. Prioridade opcional: `low` | `medium` | `high`.
+Detalhe SQL agile: [architecture/data-model.md](architecture/data-model.md) — § Modelo agile (v3).
 
 ## Integrações
 

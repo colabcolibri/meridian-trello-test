@@ -4,6 +4,18 @@ use std::sync::Mutex;
 
 const INITIAL_MIGRATION: &str = include_str!("../../migrations/20260702173000_initial_schema.sql");
 const INITIAL_MIGRATION_VERSION: &str = "20260702173000";
+const AGILE_MIGRATION: &str = include_str!("../../migrations/20260702191744_agile_schema.sql");
+const AGILE_MIGRATION_VERSION: &str = "20260702191744";
+const MERIDIAN_V2_MIGRATION: &str = include_str!("../../migrations/20260702193000_us_meridian_v2.sql");
+const MERIDIAN_V2_MIGRATION_VERSION: &str = "20260702193000";
+const DROP_KANBAN_V1_MIGRATION: &str = include_str!("../../migrations/20260702193736_drop_kanban_v1.sql");
+const DROP_KANBAN_V1_MIGRATION_VERSION: &str = "20260702193736";
+const MERIDIAN_FULL_MIGRATION: &str = include_str!("../../migrations/20260702194352_meridian_full_schema.sql");
+const MERIDIAN_FULL_MIGRATION_VERSION: &str = "20260702194352";
+const WORKFLOW_EN_MIGRATION: &str = include_str!("../../migrations/20260702220000_workflow_columns_en.sql");
+const WORKFLOW_EN_MIGRATION_VERSION: &str = "20260702220000";
+const VERSION_EPICS_MIGRATION: &str = include_str!("../../migrations/20260702230555_version_epics.sql");
+const VERSION_EPICS_MIGRATION_VERSION: &str = "20260702230555";
 
 #[allow(dead_code)]
 pub struct DbState(pub Mutex<Connection>);
@@ -32,7 +44,13 @@ fn run_migrations(conn: &Connection) -> Result<()> {
         );",
     )?;
 
-    apply_migration(conn, INITIAL_MIGRATION_VERSION, INITIAL_MIGRATION)
+    apply_migration(conn, INITIAL_MIGRATION_VERSION, INITIAL_MIGRATION)?;
+    apply_migration(conn, AGILE_MIGRATION_VERSION, AGILE_MIGRATION)?;
+    apply_migration(conn, MERIDIAN_V2_MIGRATION_VERSION, MERIDIAN_V2_MIGRATION)?;
+    apply_migration(conn, DROP_KANBAN_V1_MIGRATION_VERSION, DROP_KANBAN_V1_MIGRATION)?;
+    apply_migration(conn, MERIDIAN_FULL_MIGRATION_VERSION, MERIDIAN_FULL_MIGRATION)?;
+    apply_migration(conn, WORKFLOW_EN_MIGRATION_VERSION, WORKFLOW_EN_MIGRATION)?;
+    apply_migration(conn, VERSION_EPICS_MIGRATION_VERSION, VERSION_EPICS_MIGRATION)
 }
 
 fn apply_migration(conn: &Connection, version: &str, sql: &str) -> Result<()> {
@@ -84,7 +102,7 @@ mod tests {
             )
             .expect("count tables");
 
-        assert_eq!(table_count, 8); // 7 domain tables + _schema_migrations
+        assert_eq!(table_count, 11); // 10 domain tables + _schema_migrations
 
         let _ = std::fs::remove_file(&db_path);
     }

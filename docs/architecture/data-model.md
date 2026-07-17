@@ -1,99 +1,62 @@
 # Modelo de dados — SQLite
 
-## Tabelas
+Fonte de verdade runtime do app: **projetos agile** com user stories Meridian (schema v2). Kanban de tarefas v1 foi removido na migration `20260702193736_drop_kanban_v1.sql`.
 
-### boards
-
-```sql
-CREATE TABLE boards (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-```
-
-### columns
-
-```sql
-CREATE TABLE columns (
-  id TEXT PRIMARY KEY,
-  board_id TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  order_index INTEGER NOT NULL,
-  UNIQUE(board_id, order_index)
-);
-CREATE INDEX idx_columns_board ON columns(board_id);
-```
-
-### cards
-
-```sql
-CREATE TABLE cards (
-  id TEXT PRIMARY KEY,
-  column_id TEXT NOT NULL REFERENCES columns(id) ON DELETE CASCADE,
-  title TEXT NOT NULL,
-  description TEXT,
-  priority TEXT CHECK(priority IN ('low','medium','high') OR priority IS NULL),
-  due_date TEXT,
-  notes TEXT,
-  archived INTEGER NOT NULL DEFAULT 0,
-  order_index INTEGER NOT NULL,
-  created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
-);
-CREATE INDEX idx_cards_column ON cards(column_id);
-CREATE INDEX idx_cards_archived ON cards(archived);
-```
-
-### tags
-
-```sql
-CREATE TABLE tags (
-  id TEXT PRIMARY KEY,
-  board_id TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  color TEXT NOT NULL
-);
-```
-
-### card_tags
-
-```sql
-CREATE TABLE card_tags (
-  card_id TEXT NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
-  tag_id TEXT NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
-  PRIMARY KEY (card_id, tag_id)
-);
-```
-
-### checklist_items
-
-```sql
-CREATE TABLE checklist_items (
-  id TEXT PRIMARY KEY,
-  card_id TEXT NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
-  text TEXT NOT NULL,
-  completed INTEGER NOT NULL DEFAULT 0,
-  order_index INTEGER NOT NULL
-);
-CREATE INDEX idx_checklist_card ON checklist_items(card_id);
-```
-
-### app_preferences
+## Preferências
 
 ```sql
 CREATE TABLE app_preferences (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
--- last_board_id armazenado aqui
+-- last_project_id, last_sprint_id:{project_id}
 ```
+
+## Modelo agile
+
+Migration base `20260702191744_agile_schema.sql`. Hierarquia: `projects` → `versions` / `epics` / `sprints` → `user_stories`.
+
+| Tabela | Papel |
+| ------ | ----- |
+| `projects` | Produto/workspace agile |
+| `versions` | Release (`v1`, `v2`…) |
+| `epics` | Capability (`EPIC-01`…) |
+| `sprints` | Timebox (`v1-S1`…) |
+| `version_epics` | Junção N:N épico ↔ versão (substitui write em `version_ids_json`) |
+| `workflow_columns` | Colunas do quadro (Backlog → Concluída) |
+| `user_stories` | US (`US-0001`…) com Intent/Plan/Boundaries |
+| `acceptance_criteria` | Checklist de aceite |
+| `story_dependencies` | `depends_on` entre US |
+
+IDs legíveis são únicos por `project_id` (chaves compostas). Coluna `maps_status` em `workflow_columns` atualiza status da US ao mover (ex.: Concluída → ✅).
+
+## US Meridian v2 (v4)
+
+Migration `20260702193000_us_meridian_v2.sql` estende `user_stories`:
+
+| Coluna | Tipo | Papel |
+| ------ | ---- | ----- |
+| `tests` | TEXT NOT NULL DEFAULT `required` | Política de testes na US |
+| `tests_status` | TEXT NOT NULL DEFAULT `pending` | Estado dos testes |
+| `out_of_scope` | TEXT | Boundaries — fora de escopo |
+| `boundary_notes` | TEXT | Boundaries — notas |
+| `architecture_refs` | TEXT | Plan — referências de arquitetura |
+| `planned_json` | TEXT | Plan — checklist Planned (JSON array) |
+| `record_json` | TEXT | Record — evidência de fechamento (read-only na UI) |
+
+Workflow seed (6 colunas): Backlog → Refine → Pronta → Em progresso → Revisão → Concluída.
+
+`StorySummary` (API `list_stories`) inclui preamble, Why, done_when, preview de acceptance (até 3 itens), `workflow_column_name` e contagens para o cartão `UsCardMeridian`.
 
 ## Ordenação
 
-Reordenar colunas ou cartões recalcula `order_index` em transação única para evitar gaps inconsistentes.
+Reordenar stories no quadro recalcula `order_index` em transação única.
 
 ## Migrations
 
-Pasta `src-tauri/migrations/` — prefixo `YYYYMMDDHHMMSS`. US de schema cria migration inicial consolidada.
+Pasta `src-tauri/migrations/` — prefixo `YYYYMMDDHHMMSS`.
+
+- `20260702173000_initial_schema.sql` — bootstrap (`app_preferences`; tabelas v1 removidas depois)
+- `20260702191744_agile_schema.sql` — gestão agile v3
+- `20260702193000_us_meridian_v2.sql` — campos schema v2 + coluna Refine
+- `20260702230555_version_epics.sql` — junction épico↔versão + backfill JSON legado
