@@ -1099,6 +1099,13 @@
   color: var(--trello-text-muted);
 }
 
+.hub-epic-filter__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--trello-text-muted);
+}
+
 .hub-epic-filter__pills {
   display: flex;
   flex-wrap: wrap;

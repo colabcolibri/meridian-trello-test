@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import type { Epic, Project, Sprint, Version } from "../../../domain/agileTypes";
+import type { Epic, Project, Sprint, StorySummary, Version } from "../../../domain/agileTypes";
 import { projectService } from "../projectService";
 import { versionService } from "../versionService";
 import { epicService } from "../epicService";
 import { sprintService } from "../sprintService";
+import { storyService } from "../storyService";
 import { CreateVersionDialog } from "./CreateVersionDialog";
 import { CreateEpicDialog } from "./CreateEpicDialog";
 import { CreateSprintDialog } from "./CreateSprintDialog";
@@ -25,8 +26,9 @@ export function ProjectHubPage() {
   const [versions, setVersions] = useState<Version[]>([]);
   const [epics, setEpics] = useState<{ id: string; title: string }[]>([]);
   const [sprints, setSprints] = useState<Sprint[]>([]);
+  const [versionStories, setVersionStories] = useState<StorySummary[]>([]);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
-  /** Optional board filter — does not gate sprint list. */
+  /** Optional epic filter — narrows visible sprints and board navigation. */
   const [epicFilterId, setEpicFilterId] = useState<string | null>(null);
   const [selectedSprintId, setSelectedSprintId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -73,16 +75,19 @@ export function ProjectHubPage() {
     if (!projectId || !selectedVersionId) {
       setEpics([]);
       setSprints([]);
+      setVersionStories([]);
       setEpicFilterId(null);
       setSelectedSprintId(null);
       return;
     }
-    const [eps, sprs] = await Promise.all([
+    const [eps, sprs, stories] = await Promise.all([
       epicService.listForVersion(projectId, selectedVersionId),
       sprintService.list(projectId, selectedVersionId),
+      storyService.list(projectId, { versionId: selectedVersionId }),
     ]);
     setEpics(eps);
     setSprints(sprs);
+    setVersionStories(stories);
     setEpicFilterId((prev) => (prev && eps.some((e) => e.id === prev) ? prev : null));
     setSelectedSprintId((prev) => {
       if (prev && sprs.some((s) => s.id === prev)) return prev;
@@ -125,9 +130,27 @@ export function ProjectHubPage() {
     void loadVersionContext();
   };
 
+  const visibleSprints = useMemo(() => {
+    if (!epicFilterId) return sprints;
+    const sprintIds = new Set(
+      versionStories
+        .filter((st) => st.epic_id === epicFilterId && st.sprint_id)
+        .map((st) => st.sprint_id as string),
+    );
+    return sprints.filter((s) => sprintIds.has(s.id));
+  }, [sprints, versionStories, epicFilterId]);
+
+  useEffect(() => {
+    setSelectedSprintId((prev) => {
+      if (prev && visibleSprints.some((s) => s.id === prev)) return prev;
+      if (visibleSprints.length === 1) return visibleSprints[0].id;
+      return null;
+    });
+  }, [epicFilterId, visibleSprints]);
+
   const selectedSprint = useMemo(
-    () => sprints.find((s) => s.id === selectedSprintId) ?? null,
-    [sprints, selectedSprintId],
+    () => visibleSprints.find((s) => s.id === selectedSprintId) ?? null,
+    [visibleSprints, selectedSprintId],
   );
 
   const openSprintBoard = async (sprintId: string) => {
@@ -299,6 +322,7 @@ export function ProjectHubPage() {
                       ＋
                     </button>
                   </div>
+                  <p className="hub-epic-filter__hint">{copy.epicFilterHint}</p>
                   {epics.length > 0 && (
                     <details className="project-workspace__epic-details">
                       <summary>{copy.manageEpics}</summary>
@@ -322,7 +346,7 @@ export function ProjectHubPage() {
                 </div>
 
                 <ul className="project-workspace__sprint-grid">
-                  {sprints.map((s) => (
+                  {visibleSprints.map((s) => (
                     <li key={s.id}>
                       <HubEntityCard
                         active={selectedSprintId === s.id}
@@ -341,6 +365,9 @@ export function ProjectHubPage() {
                 </ul>
                 {sprints.length === 0 && (
                   <p className="project-workspace__empty">{copy.noSprints}</p>
+                )}
+                {sprints.length > 0 && epicFilterId && visibleSprints.length === 0 && (
+                  <p className="project-workspace__empty">{copy.noSprintsForEpic(epicFilterId)}</p>
                 )}
               </>
             )}
