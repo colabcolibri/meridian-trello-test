@@ -1,0 +1,14 @@
+{
+  "date": "2026-07-17",
+  "entries": [
+    {
+      "time": "21:21",
+      "title": "v6 demo web — localStorage e GitHub Pages",
+      "affected_document": "docs/versions/v6.md",
+      "what_changed": "Criadas US-0064 e US-0065 ✅: BrowserAgileStore + tauriInvoke fora do Tauri; banner demo; vite base configurável; workflow deploy-pages na branch agile.",
+      "why_changed": "Demo Meridian agile exigia Tauri local — visitantes precisam testar UI no browser com dados que não saem do dispositivo e link estático publicável.",
+      "impact": "Produto desktop SQLite permanece SoT; browser é modo demo. Gestor: habilitar GitHub Pages (GitHub Actions) no repo na primeira vez; alinhar VITE_BASE_PATH ao subpath do Pages.",
+      "responsible": "gestor"
+    }
+  ]
+}

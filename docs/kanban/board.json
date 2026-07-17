@@ -944,5 +944,33 @@
     "tests": "required",
     "tests_status": "done",
     "ready": true
+  },
+  {
+    "id": "US-0064",
+    "title": "Store browser e roteamento tauriInvoke",
+    "epic": "EPIC-20",
+    "version": "v6",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [],
+    "done_when": "Fora do Tauri, services agile invocam BrowserAgileStore com localStorage; fluxo projeto→hub→quadro funciona em vite preview sem erro de backend.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0065",
+    "title": "Banner demo, base Vite e deploy GitHub Pages",
+    "epic": "EPIC-20",
+    "version": "v6",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0064"
+    ],
+    "done_when": "Banner visível só no browser; build com base configurável; push na branch agile dispara workflow Pages.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
   }
 ]

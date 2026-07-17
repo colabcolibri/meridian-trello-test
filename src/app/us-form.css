@@ -765,3 +765,38 @@
 .us-included-summary__list li:last-child {
   border-bottom: none;
 }
+
+.browser-demo-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: linear-gradient(90deg, #e9f2ff 0%, #fff7e6 100%);
+  border-bottom: 1px solid #091e4226;
+  font-size: 0.8125rem;
+  color: var(--trello-text-secondary);
+}
+
+.browser-demo-banner__code {
+  border-radius: 4px;
+  background: rgb(9 30 66 / 8%);
+  padding: 0.125rem 0.375rem;
+  font-size: 0.75rem;
+}
+
+.browser-demo-banner__reset {
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid #091e4226;
+  background: #fff;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--trello-text-primary);
+}
+
+.browser-demo-banner__reset:hover {
+  background: #091e420f;
+}
