@@ -9,7 +9,11 @@ export function isBrowserDemo(): boolean {
 export function demoProjectsUrl(): string {
   const base = import.meta.env.BASE_URL ?? "/";
   const normalized = base.endsWith("/") ? base : `${base}/`;
-  return `${normalized}projects`;
+  const path = `${normalized}projects`;
+  if (typeof window !== "undefined") {
+    return new URL(path, window.location.origin).href;
+  }
+  return path;
 }
 
 /** Clears localStorage sample and navigates to the project list (avoids stale :projectId routes). */
