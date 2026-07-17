@@ -972,5 +972,50 @@
     "tests": "required",
     "tests_status": "done",
     "ready": true
+  },
+  {
+    "id": "US-0066",
+    "title": "Reset demo e rotas stale no browser",
+    "epic": "EPIC-20",
+    "version": "v6",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0064"
+    ],
+    "done_when": "Reset sample data navega para /projects; hub com projectId inválido mostra erro e link — não loop Carregando.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0067",
+    "title": "Chrome inglês e visual demo projects/hub",
+    "epic": "EPIC-20",
+    "version": "v6",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0065"
+    ],
+    "done_when": "Browser demo: hub/list/included em inglês; hero e card featured na lista; hub com badges e painel contexto refinado.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
+  },
+  {
+    "id": "US-0068",
+    "title": "Seed demo rico v4–v6 no browser",
+    "epic": "EPIC-20",
+    "version": "v6",
+    "status": "✅",
+    "moscow": "Must",
+    "depends_on": [
+      "US-0064"
+    ],
+    "done_when": "Primeira carga do browser demo traz ~26 US reais do repo em v4/v5/v6, épicos e sprints ligados, quadro com cartões em todas as colunas.",
+    "tests": "required",
+    "tests_status": "done",
+    "ready": true
   }
 ]

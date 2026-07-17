@@ -15,13 +15,17 @@ const AgileBoardFilterContext = createContext<AgileBoardFilterState | null>(null
 
 export function AgileBoardFilterProvider({
   initialSprintId,
+  initialVersionId,
+  initialEpicId,
   children,
 }: {
   initialSprintId?: string | null;
+  initialVersionId?: string | null;
+  initialEpicId?: string | null;
   children: ReactNode;
 }) {
-  const [versionId, setVersionId] = useState<string | null>(null);
-  const [epicId, setEpicId] = useState<string | null>(null);
+  const [versionId, setVersionId] = useState<string | null>(initialVersionId ?? null);
+  const [epicId, setEpicId] = useState<string | null>(initialEpicId ?? null);
   const [sprintId, setSprintId] = useState<string | null>(initialSprintId ?? null);
 
   const value = useMemo(

@@ -17,7 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import type { Project, StorySummary, WorkflowColumn } from "../../../domain/agileTypes";
 import { IN_PROGRESS_COLUMN, READY_BADGE_COLUMN } from "../../../domain/agileConstants";
 import { projectService } from "../projectService";
@@ -34,6 +34,7 @@ import {
   AgileBoardFilterProvider,
   useAgileBoardFilters,
 } from "../context/AgileBoardFilterContext";
+import type { HubBoardNavigationState } from "../hubBoardNavigation";
 
 function SortableStory({
   story,
@@ -402,8 +403,14 @@ function AgileBoardInner() {
 
 export function AgileBoardView() {
   const { sprintId } = useParams();
+  const location = useLocation();
+  const nav = location.state as HubBoardNavigationState | null;
   return (
-    <AgileBoardFilterProvider initialSprintId={sprintId ?? null}>
+    <AgileBoardFilterProvider
+      initialSprintId={sprintId ?? null}
+      initialVersionId={nav?.boardFilters?.versionId ?? null}
+      initialEpicId={nav?.boardFilters?.epicId ?? null}
+    >
       <AgileBoardInner />
     </AgileBoardFilterProvider>
   );

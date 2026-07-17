@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { VersionIncluded } from "../../../domain/agileTypes";
+import { includedCopyForRuntime } from "../../../lib/browserDemoChrome";
 import { versionService } from "../versionService";
 
 export function VersionIncludedSummary({
@@ -23,10 +24,12 @@ export function VersionIncludedSummary({
       .catch((err) => setError(String(err)));
   }, [projectId, versionId]);
 
+  const copy = includedCopyForRuntime();
+
   if (!versionId) {
     return (
       <p className="text-sm text-[var(--trello-text-muted)]">
-        Selecione uma versão para ver o escopo incluído (derivado do banco).
+        {copy.selectVersion}
       </p>
     );
   }
@@ -36,18 +39,17 @@ export function VersionIncludedSummary({
   }
 
   if (!included) {
-    return <p className="text-sm text-[var(--trello-text-muted)]">Carregando…</p>;
+    return <p className="text-sm text-[var(--trello-text-muted)]">{copy.loading}</p>;
   }
 
   return (
     <div className="us-included-summary">
       <p className="us-included-summary__meta">
-        {included.epics.length} épico(s) · {included.sprint_count} sprint(s) ·{" "}
-        {included.story_count} US
+        {copy.meta(included.epics.length, included.sprint_count, included.story_count)}
       </p>
       {included.epics.length === 0 ? (
         <p className="text-sm text-[var(--trello-text-muted)]">
-          Nenhum épico vinculado ainda — vincule na criação/edição do épico.
+          {copy.noEpics}
         </p>
       ) : (
         <ul className="us-included-summary__list">

@@ -9,7 +9,9 @@ import type {
   WorkflowColumn,
 } from "../../../domain/agileTypes";
 
-const STORAGE_KEY = "meridian-agile-browser-v1";
+import { createDemoSeedDb } from "./browserDemoSeed";
+
+const STORAGE_KEY = "meridian-agile-browser-v4";
 
 export interface VersionEpicLink {
   project_id: string;
@@ -38,29 +40,22 @@ export interface BrowserDb {
   dependencies: StoryDep[];
 }
 
-function emptyDb(): BrowserDb {
-  return {
-    prefs: {},
-    projects: [],
-    versions: [],
-    epics: [],
-    versionEpics: [],
-    sprints: [],
-    workflowColumns: [],
-    stories: [],
-    acceptance: [],
-    dependencies: [],
-  };
+function seedIfMissing(): BrowserDb {
+  const db = createDemoSeedDb();
+  saveDb(db);
+  return db;
 }
 
 export function loadDb(): BrowserDb {
-  if (typeof localStorage === "undefined") return emptyDb();
+  if (typeof localStorage === "undefined") return createDemoSeedDb();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyDb();
-    return JSON.parse(raw) as BrowserDb;
+    if (!raw) return seedIfMissing();
+    const parsed = JSON.parse(raw) as BrowserDb;
+    if (!parsed.projects?.length) return seedIfMissing();
+    return parsed;
   } catch {
-    return emptyDb();
+    return seedIfMissing();
   }
 }
 
@@ -760,7 +755,8 @@ export class BrowserAgileStore {
   }
 }
 
+/** Resets browser storage to the bundled sample (this repo’s v5/v6 reference data). */
 export function clearBrowserAgileStore(): void {
-  saveDb(emptyDb());
+  saveDb(createDemoSeedDb());
   singleton = null;
 }

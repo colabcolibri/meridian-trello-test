@@ -1,5 +1,5 @@
 import { isTauriRuntime } from "../lib/isTauriRuntime";
-import { clearBrowserAgileStore } from "../features/agile/browser/browserAgileStore";
+import { resetBrowserDemoAndGoToProjects } from "../lib/browserDemoChrome";
 
 export function BrowserDemoBanner() {
   if (isTauriRuntime()) return null;
@@ -10,8 +10,8 @@ export function BrowserDemoBanner() {
       role="status"
     >
       <p className="browser-demo-banner__text">
-        <strong>Demo web</strong> — dados salvos só neste navegador (localStorage). Nada é enviado
-        a servidor. Para SQLite completo, use{" "}
+        <strong>Web demo</strong> — data is stored only in this browser (localStorage). Nothing is sent
+        to a server. For the full SQLite app, run{" "}
         <code className="browser-demo-banner__code">pnpm tauri dev</code>.
       </p>
       <button
@@ -20,15 +20,14 @@ export function BrowserDemoBanner() {
         onClick={() => {
           if (
             window.confirm(
-              "Apagar todos os dados desta demo neste navegador? Esta ação não pode ser desfeita.",
+              "Reset the demo to the initial sample data? Your edits in this browser will be lost.",
             )
           ) {
-            clearBrowserAgileStore();
-            window.location.reload();
+            resetBrowserDemoAndGoToProjects();
           }
         }}
       >
-        Limpar demo
+        Reset sample data
       </button>
     </div>
   );
