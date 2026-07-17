@@ -2,7 +2,7 @@ name: Deploy demo web (GitHub Pages)
 
 on:
   push:
-    branches: [agile]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

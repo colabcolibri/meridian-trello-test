@@ -2,6 +2,15 @@
   "date": "2026-07-17",
   "entries": [
     {
+      "time": "21:48",
+      "title": "Linha única main + Pages no push main",
+      "affected_document": ".github/workflows/deploy-pages.yml",
+      "what_changed": "Conteúdo da branch agile integrado em main (PR #1); workflow deploy-pages passa a disparar em push na branch main em vez de agile.",
+      "why_changed": "Evitar duas linhas de publicação — clone, PRs e demo Pages alinhados ao default branch do GitHub.",
+      "impact": "Próximos deploys da demo web exigem push em main; branch agile pode ser arquivada. US-0065 Record histórico ainda cita agile — critério operacional atual é main.",
+      "responsible": "gestor"
+    },
+    {
       "time": "21:21",
       "title": "v6 demo web — localStorage e GitHub Pages",
       "affected_document": "docs/versions/v6.md",
